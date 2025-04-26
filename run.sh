@@ -56,20 +56,11 @@ install_packages "${MEDIA[@]}"
 echo "Installing fonts..."
 install_packages "${FONTS[@]}"
 
-# Enable services
-echo "Configuring services..."
-for service in "${SERVICES[@]}"; do
-  if ! systemctl is-enabled "$service" &> /dev/null; then
-    echo "Enabling $service..."
-    sudo systemctl enable "$service"
-  else
-    echo "$service is already enabled"
-  fi
-done
-
-
-# Some programs just run better as flatpaks. Like discord/spotify
+# Install flatpaks
 echo "Installing flatpaks (like discord and spotify)"
 . install-flatpaks.sh
+
+# Run dotfiles-setup
+. dotfiles-setup.sh
 
 echo "Setup complete! You may want to reboot your system."
