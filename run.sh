@@ -57,7 +57,7 @@ echo "Installing fonts..."
 install_packages "${FONTS[@]}"
 
 # Install flatpaks
-echo "Installing flatpaks"
+echo "Installing flatpaks..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 . install-flatpaks.sh
 
