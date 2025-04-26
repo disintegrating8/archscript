@@ -57,7 +57,8 @@ echo "Installing fonts..."
 install_packages "${FONTS[@]}"
 
 # Install flatpaks
-echo "Installing flatpaks (like discord and spotify)"
+echo "Installing flatpaks"
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 . install-flatpaks.sh
 
 # Run dotfiles-setup
