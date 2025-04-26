@@ -27,8 +27,12 @@ fi
 if [ $? -eq 0 ]; then
   cd "$REPO_NAME"
   stow zsh
+  stow starship
   stow kitty
   stow nvim
+  stow backgrounds
+  stow hypr
+  stow waybar
 else
   echo "Failed to clone the repository."
   exit 1
