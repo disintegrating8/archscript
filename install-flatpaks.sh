@@ -1,6 +1,6 @@
 FLATPAKS=(
-  "discord"
-  "joplin"
+  "com.discordapp.Discord"
+  "net.cozic.joplin_desktop"
 )
 
 for pak in "${FLATPAKS[@]}"; do
