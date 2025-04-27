@@ -4,7 +4,6 @@ ORIGINAL_DIR=$(pwd)
 REPO_URL="https://github.com/disintegrating8/dotfiles"
 REPO_NAME="dotfiles"
 
-
 is_stow_installed() {
   pacman -Qi "stow" &> /dev/null
 }
@@ -26,15 +25,14 @@ fi
 # Check if the clone was successful
 if [ $? -eq 0 ]; then
   cd "$REPO_NAME"
-  # stow bash
-  stow starship
-  stow kitty
-  stow nvim
-  stow backgrounds
-  # stow hypr
-  stow waybar
+  stow --adopt bash
+  stow --adopt starship
+  stow --adopt kitty
+  stow --adopt nvim
+  stow --adopt backgrounds
+  stow --adopt hypr
+  stow --adopt waybar
 else
   echo "Failed to clone the repository."
   exit 1
 fi
-
