@@ -64,6 +64,6 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 # Run dotfiles-setup
 . dotfiles-setup.sh
 
-. fcitx.sh
+. fcitx-setup.sh
 
 echo "Setup complete! You may want to reboot your system."
