@@ -29,9 +29,6 @@ if [ $? -eq 0 ]; then
   stow --adopt starship
   stow --adopt kitty
   stow --adopt nvim
-  stow --adopt backgrounds
-  stow --adopt hypr
-  stow --adopt waybar
 else
   echo "Failed to clone the repository."
   exit 1

@@ -1,5 +1,4 @@
 FLATPAKS=(
-  "com.discordapp.Discord"
   "net.cozic.joplin_desktop"
 )
 
