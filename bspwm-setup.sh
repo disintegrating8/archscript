@@ -9,19 +9,6 @@ setupbspwm() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm base-devel libx11 libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
             ;;
-        apk)
-            "$ESCALATION_TOOL" "$PACKAGER" add build-base libxinerama-dev libxft-dev imlib2-dev font-dejavu dbus-x11 git unzip flameshot feh polkit
-            ;;
-        apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y build-essential libx11-dev libxinerama-dev libxft-dev libimlib2-dev libx11-xcb-dev libfontconfig1 libx11-6 libxft2 libxinerama1 libxcb-res0-dev git unzip flameshot lxappearance feh mate-polkit
-            ;;
-        dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
-            ;;
-        zypper)
-            "$ESCALATION_TOOL" "$PACKAGER"  install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
-            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1
@@ -36,18 +23,6 @@ setupPicomDependencies() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm libxcb meson libev uthash libconfig
             ;;
-        apk)
-            "$ESCALATION_TOOL" "$PACKAGER" add libxcb-dev meson libev-dev uthash-dev libconfig-dev pixman-dev xcb-util-image-dev xcb-util-renderutil-dev pcre2-dev libepoxy-dev dbus-dev xcb-util-dev
-            ;;
-        apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb1-dev libxcb-res0-dev libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libepoxy-dev libpcre2-dev libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
-            ;;
-        dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel dbus-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb libXext-devel libxcb-devel libGL-devel libEGL-devel libepoxy-devel meson pcre2-devel pixman-devel uthash-devel xcb-util-image-devel xcb-util-renderutil-devel xorg-x11-proto-devel xcb-util-devel
-            ;;
-        zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxcb-devel dbus-1-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb1 libXext-devel libxcb-devel Mesa-libGL-devel Mesa-libEGL-devel libepoxy-devel meson pcre2-devel uthash-devel xcb-util-image-devel libpixman-1-0-devel xcb-util-renderutil-devel xcb-util-devel
-            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
@@ -60,7 +35,7 @@ setupPicomDependencies() {
 setup_dotfiles() {
     cd "$HOME" && git clone https://github.com/disintegrating8/dotfiles.git
     cd dotfiles/ # Hardcoded path, maybe not the best.
-    stow --adopt bspwm polybar picom skhd 
+    stow bspwm 
 }
 
 install_nerd_font() {
@@ -287,34 +262,12 @@ setupDisplayManager() {
     fi
 }
 
-install_slstatus() {
-    printf "Do you want to install slstatus? (y/N): "
-    read -r response
-    if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
-        printf "%b\n" "${YELLOW}Installing slstatus${RC}"
-        cd "$HOME/dwm-titus/slstatus" || { 
-            printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"
-            return 1
-        }
-        if "$ESCALATION_TOOL" make clean install; then
-            printf "%b\n" "${GREEN}slstatus installed successfully${RC}"
-        else
-            printf "%b\n" "${RED}Failed to install slstatus${RC}"
-            return 1
-        fi
-    else
-        printf "%b\n" "${GREEN}Skipping slstatus installation${RC}"
-    fi
-    cd "$HOME"
-}
-
 checkEnv
 checkEscalationTool
 setupDisplayManager
 setupDWM
 setupPicomDependencies
 makeDWM
-install_slstatus
 install_nerd_font
 picom_animations
 clone_config_folders
