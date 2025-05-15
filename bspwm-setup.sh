@@ -174,18 +174,6 @@ setupDisplayManager() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm xorg-xinit xorg-server
             ;;
-        apk)
-            "$ESCALATION_TOOL" setup-xorg-base
-            ;;
-        apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y xorg xinit
-            ;;
-        dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-x11-xinit xorg-x11-server-Xorg
-            ;;
-        zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y xinit xorg-x11-server
-            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
@@ -235,21 +223,6 @@ setupDisplayManager() {
                 if [ "$DM" = "lightdm" ]; then
                     "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm lightdm-gtk-greeter
                 fi
-                ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGER" add lightdm-gtk-greeter
-                fi
-                ;;    
-            apt-get|nala)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            dnf)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            zypper)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
