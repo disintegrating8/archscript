@@ -3,6 +3,8 @@
 . ../common-script.sh
 . ../common-service-script.sh
 
+set -e
+
 # Variables
 REPO_URL="https://github.com/disintegrating8/archscript.git"
 REPO_DIR="$HOME/archscript"
@@ -18,22 +20,18 @@ setupRepo() {
         fi
     fi
 
-    if [ -d "$Distro_DIR" ]; then
-        echo "${YELLOW}$Distro_DIR exists. Updating the repository... ${RESET}"
-        cd "$Distro_DIR"
+    if [ -d "$REPO_DIR" ]; then
+        echo "${YELLOW}$REPO_DIR exists. Updating the repository... ${RESET}"
+        cd "$REPO_DIR"
         git stash && git pull
-        chmod +x install.sh
-        ./install.sh
     else
         echo "${MAGENTA}$Distro_DIR does not exist. Cloning the repository...${RESET}"
-        git clone --depth=1 "$Github_URL" "$Distro_DIR"
-        cd "$Distro_DIR"
-        chmod +x install.sh
-        ./install.sh
+        git clone --depth=1 "$REPO_URL" "$REPO_DIR"
+        cd "$REPO_DIR"
     fi
 }
 
-Options() {
+options() {
     printf "%b\n" "${YELLOW}--------------------------${RC}" 
     printf "%b\n" "${YELLOW}What do you want to do? ${RC}" 
     printf "%b\n" "${YELLOW}1. Arch-Server Setup ${RC}" 
@@ -52,7 +50,7 @@ Options() {
         3)
             chmod +x bspwm-setup.sh
             ./bspwm-setup.sh
-            
+            ;;       
         4)
             printf "%b\n" "${GREEN}No display manager will be installed${RC}"
             chmod +x application-setup.sh
