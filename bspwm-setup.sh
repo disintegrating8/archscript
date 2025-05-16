@@ -33,7 +33,7 @@ setupPicomDependencies() {
 }
 
 setup_dotfiles() {
-    cd "$HOME" && git clone https://github.com/disintegrating8/dotfiles.git
+    ./dotfiles-setup.sh
     cd dotfiles/ # Hardcoded path, maybe not the best.
     stow bspwm 
 }
@@ -194,8 +194,9 @@ setupDisplayManager() {
         printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
         printf "%b\n" "${YELLOW}1. SDDM ${RC}" 
         printf "%b\n" "${YELLOW}2. LightDM ${RC}" 
-        printf "%b\n" "${YELLOW}3. GDM ${RC}" 
-        printf "%b\n" "${YELLOW}4. None ${RC}" 
+        printf "%b\n" "${YELLOW}3. GDM ${RC}"
+        printf "%b\b" "${YELLOW}4. Ly - TUI Display Manager ${RC}"
+        printf "%b\n" "${YELLOW}5. None ${RC}" 
         printf "%b" "${YELLOW}Please select one: ${RC}"
         read -r choice
         case "$choice" in
@@ -209,11 +210,14 @@ setupDisplayManager() {
                 DM="gdm"
                 ;;
             4)
+                DM="ly"
+                ;;
+            5)
                 printf "%b\n" "${GREEN}No display manager will be installed${RC}"
                 return 0
                 ;;
             *)
-                printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
+                printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, 4, or 5.${RC}"
                 return 1
                 ;;
         esac
@@ -238,10 +242,9 @@ setupDisplayManager() {
 checkEnv
 checkEscalationTool
 setupDisplayManager
-setupDWM
+setupbspwm
 setupPicomDependencies
-makeDWM
 install_nerd_font
 picom_animations
-clone_config_folders
+setup_dotfiles
 configure_backgrounds

@@ -23,12 +23,6 @@ checkFlatpak() {
             pacman)
                 "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm flatpak
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add flatpak
-                ;;
-            *)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y flatpak
-                ;;
         esac
         printf "%b\n" "${YELLOW}Adding Flathub remote...${RC}"
         "$ESCALATION_TOOL" flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo

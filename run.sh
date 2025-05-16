@@ -42,7 +42,8 @@ options() {
     read -r choice
     case "$choice" in
         1)
-            chmod +x futurefile.sh
+            chmod +x server-setup.sh
+            ./server-setup.sh
             ;;
         2)
             chmod +x alsofuturefile.sh
@@ -52,9 +53,8 @@ options() {
             ./bspwm-setup.sh
             ;;       
         4)
-            printf "%b\n" "${GREEN}No display manager will be installed${RC}"
-            chmod +x application-setup.sh
-            ./application-setup.sh
+            chmod +x intall.sh
+            ./install.sh
             ;;
         *)
             printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
