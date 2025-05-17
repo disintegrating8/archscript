@@ -51,7 +51,7 @@ install_flatpak() {
   done
 }
 
-run_instal() {
+run_install() {
   echo "Installing system utilities..."
   install_packages "${SYSTEM_UTILS[@]}"
 
@@ -67,5 +67,7 @@ run_instal() {
   echo "Installing flatpaks..."
   install_flatpak "${FLATPAKS[@]}"
 }
+
+run_install
 
 echo "Setup complete! You may want to reboot your system."
