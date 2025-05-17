@@ -1,10 +1,7 @@
 #!/bin/bash
 
-. ../common-script.sh
-. ../common-service-script.sh
-
-# Exit on any error
-set -e
+. ./common-script.sh
+. ./common-service-script.sh
 
 SYSTEM_UTILS=(htop btop lazygit stow fastfetch fzf zip unzip wget curl timeshift)
 
@@ -43,7 +40,7 @@ install_packages() {
   fi
 }
 
-install_flatpak() {}
+install_flatpak() {
   for pak in "${FLATPAKS[@]}"; do
     if ! flatpak list | grep -i "$pak" &> /dev/null; then
       echo "Installing Flatpak: $pak"
@@ -52,15 +49,7 @@ install_flatpak() {}
       echo "Flatpak already installed: $pak"
     fi
   done
-
-
-# Source the package list
-if [ ! -f "packages.conf" ]; then
-  echo "Error: packages.conf not found!"
-  exit 1
-fi
-
-source packages.conf
+}
 
 run_instal() {
   echo "Installing system utilities..."
