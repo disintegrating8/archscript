@@ -1,8 +1,5 @@
 #!/bin/bash
 
-. ./common-script.sh
-. ./common-service-script.sh
-
 # Variables
 REPO_URL="https://github.com/disintegrating8/archscript.git"
 REPO_DIR="$HOME/archscript"
