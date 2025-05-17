@@ -1,14 +1,7 @@
 #!/bin/bash
 
-<<<<<<< Updated upstream
 . ./common-script.sh
 . ./common-service-script.sh
-
-set -e
-=======
-../common-script.sh
-../common-service-script.sh
->>>>>>> Stashed changes
 
 # Variables
 REPO_URL="https://github.com/disintegrating8/archscript.git"
