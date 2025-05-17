@@ -11,7 +11,7 @@ APP=(brave-bin libreoffice-fresh mpv obs-studio gimp)
 
 FONTS=(ttf-meslo-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji)
 
-FLATPAKS=(net.cozic.joplin_desktop com.discordapp.Discord)
+FLATPAKS=(net.cozic.joplin_desktop com.discordapp.Discord com.mattjakeman.ExtensionManager)
 
 # Function to check if a package is installed
 is_installed() {
@@ -68,6 +68,17 @@ run_install() {
   install_flatpak "${FLATPAKS[@]}"
 }
 
+run_gnome() {
+  # Install gnome specific things to make it like a tiling WM
+  echo "Installing Gnome extensions..."
+  . gnome/gnome-extensions.sh
+  echo "Setting Gnome hotkeys..."
+  . gnome/gnome-hotkeys.sh
+  echo "Configuring Gnome..."
+  . gnome/gnome-settings.sh
+}
+
 run_install
+run_gnome
 
 echo "Setup complete! You may want to reboot your system."

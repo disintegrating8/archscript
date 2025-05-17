@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. ../common-script.sh
-. ../common-service-script.sh
+. ./common-script.sh
+. ./common-service-script.sh
 
 set -e
 
