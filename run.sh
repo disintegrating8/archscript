@@ -1,9 +1,14 @@
 #!/bin/bash
 
+<<<<<<< Updated upstream
 . ./common-script.sh
 . ./common-service-script.sh
 
 set -e
+=======
+../common-script.sh
+../common-service-script.sh
+>>>>>>> Stashed changes
 
 # Variables
 REPO_URL="https://github.com/disintegrating8/archscript.git"
@@ -36,7 +41,7 @@ options() {
     printf "%b\n" "${YELLOW}What do you want to do? ${RC}" 
     printf "%b\n" "${YELLOW}1. Arch-Server Setup ${RC}" 
     printf "%b\n" "${YELLOW}2. Gnome Desktop Setup ${RC}" 
-    printf "%b\n" "${YELLOW}3. BSPWM Setup ${RC}" 
+    printf "%b\n" "${YELLOW}3. DWM Setup ${RC}" 
     printf "%b\n" "${YELLOW}4. Install Applications ${RC}" 
     printf "%b" "${YELLOW}Please select one: ${RC}"
     read -r choice
