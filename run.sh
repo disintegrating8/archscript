@@ -32,30 +32,26 @@ setupRepo() {
 options() {
     printf "%b\n" "${YELLOW}--------------------------${RC}" 
     printf "%b\n" "${YELLOW}What do you want to do? ${RC}" 
-    printf "%b\n" "${YELLOW}1. Arch-Server Setup ${RC}" 
+    printf "%b\n" "${YELLOW}1. BSPWM Setup ${RC}" 
     printf "%b\n" "${YELLOW}2. Gnome Desktop Setup ${RC}" 
-    printf "%b\n" "${YELLOW}3. DWM Setup ${RC}" 
-    printf "%b\n" "${YELLOW}4. Install Applications ${RC}" 
+    printf "%b\n" "${YELLOW}3. Install Applications ${RC}" 
     printf "%b" "${YELLOW}Please select one: ${RC}"
     read -r choice
     case "$choice" in
         1)
-            chmod +x server-setup.sh
-            ./server-setup.sh
-            ;;
-        2)
-            chmod +x alsofuturefile.sh
-            ;;
-        3)
             chmod +x bspwm-setup.sh
             ./bspwm-setup.sh
-            ;;       
-        4)
-            chmod +x intall.sh
-            ./install.sh
             ;;
+        2)
+            chmod +x gnome-setup.sh
+            ./gnome-setup.sh
+            ;;
+        3)
+            chmod +x install.sh
+            ./install.sh
+            ;;       
         *)
-            printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
+            printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, or 3.${RC}"
             return 1
             ;;
     esac

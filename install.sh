@@ -11,7 +11,7 @@ APP=(brave-bin libreoffice-fresh mpv obs-studio gimp)
 
 FONTS=(ttf-meslo-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji)
 
-FLATPAKS=(net.cozic.joplin_desktop com.discordapp.Discord com.mattjakeman.ExtensionManager)
+FLATPAKS=(net.cozic.joplin_desktop com.discordapp.Discord)
 
 # Function to check if a package is installed
 is_installed() {
