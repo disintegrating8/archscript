@@ -5,7 +5,7 @@
 
 setupbspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel libxcb xcb-util xcb-util-wm xcb-util-keysyms libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
+    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel bspwm sxhkd libxcb xcb-util xcb-util-wm xcb-util-keysyms libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
 }
 
 setupPicomDependencies() {
