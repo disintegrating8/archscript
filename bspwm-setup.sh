@@ -5,13 +5,7 @@
 
 setupbspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel bspwm sxhkd libxcb xcb-util xcb-util-wm xcb-util-keysyms libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
-}
-
-setupPicomDependencies() {
-    printf "%b\n" "${YELLOW}Installing Picom dependencies if not already installed${RC}"
-    "$ESCALATION_TOOL" pacman -S --needed --noconfirm libx11 meson libev uthash libconfig
-    printf "%b\n" "${GREEN}Picom dependencies installed successfully${RC}"
+    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel bspwm sxhkd picom libxcb flameshot lxappearance feh mate-polkit
 }
 
 setup_dotfiles() {
@@ -23,41 +17,6 @@ setup_dotfiles() {
 install_nerd_font() {
     printf "%b\n" "${YELLOW}Install Nerd-fonts if not already installed${RC}"
     "$ESCALATION_TOOL" pacman -S --neeeded --noconfirm nerd-fonts
-    printf "%b\n" "${GREEN}Nerd-fonts installed successfully${RC}"
-}
-
-picom_animations() {
-    # clone the repo into .local/share & use the -p flag to avoid overwriting that dir
-    mkdir -p "$HOME/.local/share/"
-    if [ ! -d "$HOME/.local/share/ftlabs-picom" ]; then
-        if ! git clone https://github.com/FT-Labs/picom.git "$HOME/.local/share/ftlabs-picom"; then
-            printf "%b\n" "${RED}Failed to clone the repository${RC}"
-            return 1
-        fi
-    else
-        printf "%b\n" "${GREEN}Repository already exists, skipping clone${RC}"
-    fi
-
-    cd "$HOME/.local/share/ftlabs-picom" || { printf "%b\n" "${RED}Failed to change directory to picom${RC}"; return 1; }
-
-    # Build the project
-    if ! meson setup --buildtype=release build; then
-        printf "%b\n" "${RED}Meson setup failed${RC}"
-        return 1
-    fi
-
-    if ! ninja -C build; then
-        printf "%b\n" "${RED}Ninja build failed${RC}"
-        return 1
-    fi
-
-    # Install the built binary
-    if ! "$ESCALATION_TOOL" ninja -C build install; then
-        printf "%b\n" "${RED}Failed to install the built binary${RC}"
-        return 1
-    fi
-
-    printf "%b\n" "${GREEN}Picom animations installed successfully${RC}"
 }
 
 configure_backgrounds() {
@@ -148,8 +107,6 @@ checkEnv
 checkEscalationTool
 setupDisplayManager
 setupbspwm
-setupPicomDependencies
 install_nerd_font
-picom_animations
 clone_config_folders
 configure_backgrounds
