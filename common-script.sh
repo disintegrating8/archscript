@@ -85,31 +85,6 @@ checkAURHelper() {
     fi
 }
 
-checkEscalationTool() {
-    ## Check for escalation tools.
-    if [ -z "$ESCALATION_TOOL_CHECKED" ]; then
-        if [ "$(id -u)" = "0" ]; then
-            ESCALATION_TOOL="eval"
-            ESCALATION_TOOL_CHECKED=true
-            printf "%b\n" "${CYAN}Running as root, no escalation needed${RC}"
-            return 0
-        fi
-
-        ESCALATION_TOOLS='sudo doas'
-        for tool in ${ESCALATION_TOOLS}; do
-            if command_exists "${tool}"; then
-                ESCALATION_TOOL=${tool}
-                printf "%b\n" "${CYAN}Using ${tool} for privilege escalation${RC}"
-                ESCALATION_TOOL_CHECKED=true
-                return 0
-            fi
-        done
-
-        printf "%b\n" "${RED}Can't find a supported escalation tool${RC}"
-        exit 1
-    fi
-}
-
 checkCommandRequirements() {
     ## Check for requirements.
     REQUIREMENTS=$1
@@ -151,7 +126,6 @@ checkCurrentDirectoryWritable() {
 
 checkEnv() {
     checkArch
-    checkEscalationTool
     checkCommandRequirements "curl groups $ESCALATION_TOOL"
     checkCurrentDirectoryWritable
     checkSuperUser

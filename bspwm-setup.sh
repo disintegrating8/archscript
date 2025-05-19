@@ -1,22 +1,37 @@
 #!/bin/sh
 
 . ./common-script.sh
-. ./common-service-script.sh
 
-setupbspwm() {
+setup_bspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel bspwm sxhkd picom libxcb flameshot lxappearance feh mate-polkit
+    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd picom libxcb flameshot lxappearance feh mate-polkit
 }
 
+setup_pipewire() {
+    systemctl --user disable --now pulseaudio.socket pulseaudio.service
+    printf "%b\n" "${YELLOW}Installing pipewire if not already installed${RC}"
+    sudo pacman -S --needed --noconfirm pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware
+    systemctl --user --enable --now pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
+}
+
+setup_thunar() {
+    printf "%b\n" "${YELLOW}Installing thunar if not already installed${RC}"
+    sudo pacman -S thunar thunar-volman tumbler ffmpegthumbnailer thunar-archive-plugin xarchiver
+}
 setup_dotfiles() {
     ./dotfiles-setup.sh
     cd dotfiles/ # Hardcoded path, maybe not the best.
     stow bspwm 
 }
 
+setup_bluetooth() {
+    sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
+    sudo systemctl enable --now bluetooth.service
+}
+
 install_nerd_font() {
     printf "%b\n" "${YELLOW}Install Nerd-fonts if not already installed${RC}"
-    "$ESCALATION_TOOL" pacman -S --neeeded --noconfirm nerd-fonts
+    sudo pacman -S --neeeded --noconfirm nerd-fonts
 }
 
 configure_backgrounds() {
@@ -54,7 +69,7 @@ configure_backgrounds() {
 
 setupDisplayManager() {
     printf "%b\n" "${YELLOW}Setting up Xorg${RC}"
-    "$ESCALATION_TOOL" pacman -S --needed --noconfirm xorg-xinit xorg-server
+    sudo pacman -S --needed --noconfirm xorg-xinit xorg-server
     printf "%b\n" "${GREEN}Xorg installed successfully${RC}"
     printf "%b\n" "${YELLOW}Setting up Display Manager${RC}"
     currentdm="none"
@@ -97,7 +112,7 @@ setupDisplayManager() {
                 return 1
                 ;;
         esac
-        "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm "$DM"
+        sudo pacman -S --needed --noconfirm "$DM"
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
         enableService "$DM" 
     fi
