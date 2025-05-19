@@ -33,17 +33,7 @@ return 0
 checkFlatpak() {
     if ! command_exists flatpak; then
         printf "%b\n" "${YELLOW}Installing Flatpak...${RC}"
-        case "$PACKAGER" in
-            pacman)
-                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm flatpak
-                ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add flatpak
-                ;;
-            *)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y flatpak
-                ;;
-        esac
+        "$ESCALATION_TOOL" pacman -S --needed --noconfirm flatpak
         printf "%b\n" "${YELLOW}Adding Flathub remote...${RC}"
         "$ESCALATION_TOOL" flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         printf "%b\n" "${YELLOW}Applications installed by Flatpak may not appear on your desktop until the user session is restarted...${RC}"
@@ -69,30 +59,28 @@ checkArch() {
 
 checkAURHelper() {
     ## Check & Install AUR helper
-    if [ "$PACKAGER" = "pacman" ]; then
-        if [ -z "$AUR_HELPER_CHECKED" ]; then
-            AUR_HELPERS="yay paru"
-            for helper in ${AUR_HELPERS}; do
-                if command_exists "${helper}"; then
-                    AUR_HELPER=${helper}
-                    printf "%b\n" "${CYAN}Using ${helper} as AUR helper${RC}"
-                    AUR_HELPER_CHECKED=true
-                    return 0
-                fi
-            done
-
-            printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
-            "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm base-devel git
-            cd /opt && "$ESCALATION_TOOL" git clone https://aur.archlinux.org/yay-bin.git && "$ESCALATION_TOOL" chown -R "$USER":"$USER" ./yay-bin
-            cd yay-bin && makepkg --noconfirm -si
-
-            if command_exists yay; then
-                AUR_HELPER="yay"
+    if [ -z "$AUR_HELPER_CHECKED" ]; then
+        AUR_HELPERS="yay paru"
+        for helper in ${AUR_HELPERS}; do
+            if command_exists "${helper}"; then
+                AUR_HELPER=${helper}
+                printf "%b\n" "${CYAN}Using ${helper} as AUR helper${RC}"
                 AUR_HELPER_CHECKED=true
-            else
-                printf "%b\n" "${RED}Failed to install AUR helper.${RC}"
-                exit 1
+                return 0
             fi
+        done
+
+        printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
+        "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel git
+        cd /opt && "$ESCALATION_TOOL" git clone https://aur.archlinux.org/yay-bin.git && "$ESCALATION_TOOL" chown -R "$USER":"$USER" ./yay-bin
+        cd yay-bin && makepkg --noconfirm -si
+
+        if command_exists yay; then
+            AUR_HELPER="yay"
+            AUR_HELPER_CHECKED=true
+        else
+            printf "%b\n" "${RED}Failed to install AUR helper.${RC}"
+            exit 1
         fi
     fi
 }
@@ -133,29 +121,6 @@ checkCommandRequirements() {
     done
 }
 
-checkPackageManager() {
-    ## Check Package Manager
-    PACKAGEMANAGER=$1
-    for pgm in ${PACKAGEMANAGER}; do
-        if command_exists "${pgm}"; then
-            PACKAGER=${pgm}
-            printf "%b\n" "${CYAN}Using ${pgm} as package manager${RC}"
-            break
-        fi
-    done
-
-    ## Enable apk community packages
-    if [ "$PACKAGER" = "apk" ] && grep -qE '^#.*community' /etc/apk/repositories; then
-        "$ESCALATION_TOOL" sed -i '/community/s/^#//' /etc/apk/repositories
-        "$ESCALATION_TOOL" "$PACKAGER" update
-    fi
-
-    if [ -z "$PACKAGER" ]; then
-        printf "%b\n" "${RED}Can't find a supported package manager${RC}"
-        exit 1
-    fi
-}
-
 checkSuperUser() {
     ## Check SuperUser Group
     SUPERUSERGROUP='wheel sudo root'
@@ -183,22 +148,12 @@ checkCurrentDirectoryWritable() {
     fi
 }
 
-checkDistro() {
-    DTYPE="unknown"  # Default to unknown
-    # Use /etc/os-release for modern distro identification
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        DTYPE=$ID
-    fi
-}
 
 checkEnv() {
     checkArch
     checkEscalationTool
     checkCommandRequirements "curl groups $ESCALATION_TOOL"
-    checkPackageManager 'nala apt-get dnf pacman zypper apk'
     checkCurrentDirectoryWritable
     checkSuperUser
-    checkDistro
     checkAURHelper
 }

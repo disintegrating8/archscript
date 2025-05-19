@@ -1,34 +1,16 @@
 #!/bin/sh
 
-. ../common-script.sh
-. ../common-service-script.sh
+. ./common-script.sh
+. ./common-service-script.sh
 
 setupbspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    case "$PACKAGER" in # Install pre-Requisites
-        pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm base-devel libx11 libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
-            ;;
-        *)
-            printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
-            exit 1
-            ;;
-    esac
+    "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel libxcb xcb-util xcb-util-wm xcb-util-keysyms libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
 }
 
 setupPicomDependencies() {
     printf "%b\n" "${YELLOW}Installing Picom dependencies if not already installed${RC}"
-    
-    case "$PACKAGER" in
-        pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm libxcb meson libev uthash libconfig
-            ;;
-        *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
-            exit 1
-            ;;
-    esac
-
+    "$ESCALATION_TOOL" pacman -S --needed --noconfirm libx11 meson libev uthash libconfig
     printf "%b\n" "${GREEN}Picom dependencies installed successfully${RC}"
 }
 
@@ -40,17 +22,7 @@ setup_dotfiles() {
 
 install_nerd_font() {
     printf "%b\n" "${YELLOW}Install Nerd-fonts if not already installed${RC}"
-
-    case "$PACKAGER" in
-        pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --neeeded --noconfirm nerd-fonts
-            ;;
-        *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
-            exit 1
-            ;;
-    esac
-
+    "$ESCALATION_TOOL" pacman -S --neeeded --noconfirm nerd-fonts
     printf "%b\n" "${GREEN}Nerd-fonts installed successfully${RC}"
 }
 
@@ -123,15 +95,7 @@ configure_backgrounds() {
 
 setupDisplayManager() {
     printf "%b\n" "${YELLOW}Setting up Xorg${RC}"
-    case "$PACKAGER" in
-        pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm xorg-xinit xorg-server
-            ;;
-        *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
-            exit 1
-            ;;
-    esac
+    "$ESCALATION_TOOL" pacman -S --needed --noconfirm xorg-xinit xorg-server
     printf "%b\n" "${GREEN}Xorg installed successfully${RC}"
     printf "%b\n" "${YELLOW}Setting up Display Manager${RC}"
     currentdm="none"
@@ -157,7 +121,7 @@ setupDisplayManager() {
                 DM="sddm"
                 ;;
             2)
-                DM="lightdm"
+                DM="lightdm-gtk-greeter"
                 ;;
             3)
                 DM="gdm"
@@ -174,21 +138,9 @@ setupDisplayManager() {
                 return 1
                 ;;
         esac
-        case "$PACKAGER" in
-            pacman)
-                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm "$DM"
-                if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm lightdm-gtk-greeter
-                fi
-                ;;
-            *)
-                printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
-                exit 1
-                ;;
-        esac
+        "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm "$DM"
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        enableService "$DM"
-        
+        enableService "$DM" 
     fi
 }
 

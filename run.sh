@@ -47,7 +47,7 @@ fi
 printf "%b\n" "${YELLOW}--------------------------${RC}" 
 printf "%b\n" "${YELLOW}What do you want to do? ${RC}" 
 printf "%b\n" "${YELLOW}1. BSPWM Setup ${RC}" 
-printf "%b\n" "${YELLOW}2. Gnome Desktop Setup ${RC}" 
+printf "%b\n" "${YELLOW}2. Gnome Tiling Setup ${RC}" 
 printf "%b\n" "${YELLOW}3. Install Applications ${RC}" 
 printf "%b" "${YELLOW}Please select one: ${RC}"
 read -r choice

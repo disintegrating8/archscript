@@ -68,17 +68,7 @@ run_install() {
   install_flatpak "${FLATPAKS[@]}"
 }
 
-run_gnome() {
-  # Install gnome specific things to make it like a tiling WM
-  echo "Installing Gnome extensions..."
-  . gnome/gnome-extensions.sh
-  echo "Setting Gnome hotkeys..."
-  . gnome/gnome-hotkeys.sh
-  echo "Configuring Gnome..."
-  . gnome/gnome-settings.sh
-}
-
+checkenv
 run_install
-run_gnome
 
 echo "Setup complete! You may want to reboot your system."
