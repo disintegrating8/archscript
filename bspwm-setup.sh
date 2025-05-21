@@ -121,7 +121,9 @@ setupDisplayManager() {
 checkEnv
 checkEscalationTool
 setupDisplayManager
-setupbspwm
+setup_bspwm
 install_nerd_font
 setup_dotfiles
+setup_pipewire
+setup_thunar
 configure_backgrounds
