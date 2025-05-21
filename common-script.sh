@@ -33,14 +33,14 @@ return 0
 checkFlatpak() {
     if ! command_exists flatpak; then
         printf "%b\n" "${YELLOW}Installing Flatpak...${RC}"
-        "$ESCALATION_TOOL" pacman -S --needed --noconfirm flatpak
+        sudo pacman -S --needed --noconfirm flatpak
         printf "%b\n" "${YELLOW}Adding Flathub remote...${RC}"
-        "$ESCALATION_TOOL" flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         printf "%b\n" "${YELLOW}Applications installed by Flatpak may not appear on your desktop until the user session is restarted...${RC}"
     else
         if ! flatpak remotes | grep -q "flathub"; then
             printf "%b\n" "${YELLOW}Adding Flathub remote...${RC}"
-            "$ESCALATION_TOOL" flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+            flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         else
             printf "%b\n" "${CYAN}Flatpak is installed${RC}"
         fi
@@ -71,8 +71,8 @@ checkAURHelper() {
         done
 
         printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
-        "$ESCALATION_TOOL" pacman -S --needed --noconfirm base-devel git
-        cd /opt && "$ESCALATION_TOOL" git clone https://aur.archlinux.org/yay-bin.git && "$ESCALATION_TOOL" chown -R "$USER":"$USER" ./yay-bin
+        sudo pacman -S --needed --noconfirm base-devel git
+        cd /opt && git clone https://aur.archlinux.org/yay-bin.git && chown -R "$USER":"$USER" ./yay-bin
         cd yay-bin && makepkg --noconfirm -si
 
         if command_exists yay; then
@@ -126,7 +126,7 @@ checkCurrentDirectoryWritable() {
 
 checkEnv() {
     checkArch
-    checkCommandRequirements "curl groups $ESCALATION_TOOL"
+    checkCommandRequirements
     checkCurrentDirectoryWritable
     checkSuperUser
     checkAURHelper
