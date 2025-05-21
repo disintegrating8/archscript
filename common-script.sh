@@ -72,7 +72,7 @@ checkAURHelper() {
 
         printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
         sudo pacman -S --needed --noconfirm base-devel git
-        cd /opt && git clone https://aur.archlinux.org/yay-bin.git && chown -R "$USER":"$USER" ./yay-bin
+        cd /opt && git clone https://aur.archlinux.org/yay-bin.git && sudo chown -R "$USER":"$USER" ./yay-bin
         cd yay-bin && makepkg --noconfirm -si
 
         if command_exists yay; then
