@@ -123,5 +123,5 @@ checkEscalationTool
 setupDisplayManager
 setupbspwm
 install_nerd_font
-clone_config_folders
+setup_dotfiles
 configure_backgrounds
