@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . ./common-script.sh
-. ./common-service-script.sh
 
 GNOME_SETUP() {
   # Install gnome specific things to make it like a tiling WM

@@ -45,10 +45,10 @@ fi
 # Check if the clone was successful
 if [ $? -eq 0 ]; then
   cd "$REPO_DIR"
-  stow --adopt bash
-  stow --adopt starship
-  stow --adopt kitty
-  stow --adopt nvim
+  #stow --adopt bash
+  #stow --adopt starship
+  #stow --adopt kitty
+  #stow --adopt nvim
 else
   echo "Failed to clone the repository."
   exit 1

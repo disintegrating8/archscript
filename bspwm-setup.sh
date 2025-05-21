@@ -21,8 +21,8 @@ setup_thunar() {
 }
 setup_dotfiles() {
     ./dotfiles-setup.sh
-    cd dotfiles/ # Hardcoded path, maybe not the best.
-    stow bspwm 
+    cd dotfiles/
+    stow --adopt bspwm polybar rofi
 }
 
 setup_bluetooth() {

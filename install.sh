@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . ./common-script.sh
-. ./common-service-script.sh
 
 SYSTEM_UTILS=(htop btop lazygit stow fastfetch fzf zip unzip wget curl timeshift)
 
