@@ -27,7 +27,7 @@ setup_dotfiles() {
 
 setup_bluetooth() {
     sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
-    sudo systemctl enable --now bluetooth.service
+    sudo systemctl enable bluetooth.service
 }
 
 install_nerd_font() {
@@ -115,7 +115,7 @@ setupDisplayManager() {
         esac
         sudo pacman -S --needed --noconfirm "$DM"
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        sudo systemctl enable --now "$DM"
+        sudo systemctl enable "$DM"
     fi
 }
 
