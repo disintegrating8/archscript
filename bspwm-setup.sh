@@ -120,7 +120,6 @@ setupDisplayManager() {
 }
 
 checkEnv
-checkEscalationTool
 setupDisplayManager
 setup_bspwm
 install_nerd_font
