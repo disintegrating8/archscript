@@ -8,6 +8,7 @@ setup_bspwm() {
 }
 
 setup_pipewire() {
+    printf "%b\n" "${YELLOW}Disabling pulseaudio to avoid conflicts...${RC}"
     systemctl --user disable --now pulseaudio.socket pulseaudio.service
     printf "%b\n" "${YELLOW}Installing pipewire if not already installed${RC}"
     sudo pacman -S --needed --noconfirm pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware
@@ -16,7 +17,7 @@ setup_pipewire() {
 
 setup_thunar() {
     printf "%b\n" "${YELLOW}Installing thunar if not already installed${RC}"
-    sudo pacman -S thunar thunar-volman tumbler ffmpegthumbnailer thunar-archive-plugin xarchiver
+    sudo pacman -S --needed --noconfirm thunar thunar-volman tumbler ffmpegthumbnailer thunar-archive-plugin xarchiver
 }
 setup_dotfiles() {
     ./dotfiles-setup.sh
@@ -114,7 +115,7 @@ setupDisplayManager() {
         esac
         sudo pacman -S --needed --noconfirm "$DM"
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        enableService "$DM" 
+        sudo systemctl --enable --now "$DM"
     fi
 }
 
@@ -123,7 +124,7 @@ checkEscalationTool
 setupDisplayManager
 setup_bspwm
 install_nerd_font
-setup_dotfiles
 setup_pipewire
 setup_thunar
 configure_backgrounds
+setup_dotfiles
