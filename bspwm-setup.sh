@@ -21,7 +21,7 @@ setup_thunar() {
 }
 setup_dotfiles() {
     . ./dotfiles-setup.sh
-    cd dotfiles/
+    cd ~/dotfiles
     stow --adopt bspwm polybar rofi
 }
 
