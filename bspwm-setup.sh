@@ -20,7 +20,7 @@ setup_thunar() {
     sudo pacman -S --needed --noconfirm thunar thunar-volman tumbler ffmpegthumbnailer thunar-archive-plugin xarchiver
 }
 setup_dotfiles() {
-    ./dotfiles-setup.sh
+    . ./dotfiles-setup.sh
     cd dotfiles/
     stow --adopt bspwm polybar rofi
 }
