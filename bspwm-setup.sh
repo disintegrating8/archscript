@@ -87,7 +87,7 @@ setupDisplayManager() {
         printf "%b\n" "${YELLOW}1. SDDM ${RC}" 
         printf "%b\n" "${YELLOW}2. LightDM ${RC}" 
         printf "%b\n" "${YELLOW}3. GDM ${RC}"
-        printf "%b\b" "${YELLOW}4. Ly - TUI Display Manager ${RC}"
+        printf "%b\n" "${YELLOW}4. Ly - TUI Display Manager ${RC}"
         printf "%b\n" "${YELLOW}5. None ${RC}" 
         printf "%b" "${YELLOW}Please select one: ${RC}"
         read -r choice
