@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPO_URL="https://github.com/disintegrating8/archscript.git"
-REPO_DIR="$HOME/archscript"
+REPO_URL="https://github.com/disintegrating8/dotfiles.git"
+REPO_DIR="$HOME/dotfiles"
 
 if ! command -v stow &> /dev/null
 then
