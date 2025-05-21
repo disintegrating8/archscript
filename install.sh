@@ -67,7 +67,7 @@ run_install() {
   install_flatpak "${FLATPAKS[@]}"
 }
 
-checkenv
+checkEnv
 run_install
 
 echo "Setup complete! You may want to reboot your system."
