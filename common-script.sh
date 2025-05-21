@@ -125,7 +125,7 @@ checkCurrentDirectoryWritable() {
 
 checkEnv() {
     checkArch
-    checkCommandRequirements
+    checkCommandRequirements "curl groups sudo"
     checkCurrentDirectoryWritable
     checkSuperUser
     checkAURHelper

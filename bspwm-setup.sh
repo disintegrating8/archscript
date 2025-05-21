@@ -12,7 +12,7 @@ setup_pipewire() {
     systemctl --user disable --now pulseaudio.socket pulseaudio.service
     printf "%b\n" "${YELLOW}Installing pipewire if not already installed${RC}"
     sudo pacman -S --needed --noconfirm pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware
-    systemctl --user --enable --now pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
+    systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
 }
 
 setup_thunar() {
@@ -115,7 +115,7 @@ setupDisplayManager() {
         esac
         sudo pacman -S --needed --noconfirm "$DM"
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        sudo systemctl --enable --now "$DM"
+        sudo systemctl enable --now "$DM"
     fi
 }
 
