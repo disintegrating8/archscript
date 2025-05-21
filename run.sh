@@ -56,6 +56,7 @@ case "$choice" in
     1)
         chmod +x server-setup.sh
         ./server-setup.sh
+        ;;
     2)
         chmod +x bspwm-setup.sh
         ./bspwm-setup.sh
