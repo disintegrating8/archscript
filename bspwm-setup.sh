@@ -4,7 +4,7 @@
 
 setup_bspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd picom libxcb flameshot lxappearance feh mate-polkit
+    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd polybar rofi picom libxcb flameshot lxappearance feh mate-polkit
 }
 
 setup_pipewire() {
@@ -70,7 +70,7 @@ configure_backgrounds() {
 
 setupDisplayManager() {
     printf "%b\n" "${YELLOW}Setting up Xorg${RC}"
-    sudo pacman -S --needed --noconfirm xorg-xinit xorg-server
+    sudo pacman -S --needed --noconfirm xorg-xinit xorg-server xorg-xrandr xorg-xinput
     printf "%b\n" "${GREEN}Xorg installed successfully${RC}"
     printf "%b\n" "${YELLOW}Setting up Display Manager${RC}"
     currentdm="none"
