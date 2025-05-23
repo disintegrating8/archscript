@@ -4,7 +4,11 @@
 
 setup_bspwm() {
     printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd polybar rofi picom libxcb flameshot lxappearance feh mate-polkit
+    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd polybar rofi picom libxcb flameshot lxappearance qt6ct qt5ct feh mate-polkit
+}
+
+qt_theme() {
+	sudo pacman -S --needed --noconfirm qt5ct qt6ct qt6-svg kvantum lxappearance-gtk3
 }
 
 setup_pipewire() {
