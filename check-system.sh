@@ -118,32 +118,30 @@ checkCurrentDirectoryWritable() {
     fi
 }
 
-# Function to check if a package is installed
-is_installed() {
-  pacman -Qi "$1" &> /dev/null
-}
-
-# Function to check if a package is installed
-is_group_installed() {
-  pacman -Qg "$1" &> /dev/null
-}
-
-# Function to install packages if not already installed
-install_packages() {
-  local packages=("$@")
-  local to_install=()
-
-  for pkg in "${packages[@]}"; do
-    if ! is_installed "$pkg" && ! is_group_installed "$pkg"; then
-      to_install+=("$pkg")
+checkNvida(){
+    # Check if NVIDIA GPU is detected
+    if lspci | grep -i "nvidia" &> /dev/null; then
+        echo "Jensen Huang's MoneyMaking SHIT Detected. Installing Nvidia Drivers..."
+        # Detect LTS kernel (running or installed)
+        if uname -r | grep -q "lts" || pacman -Q linux-lts &>/dev/null; then
+            DRIVER="nvidia-lts"
+        else
+            DRIVER="nvidia-dkms"
+        fi
+        read -rp "Install $DRIVER driver? [y/N]: " confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            echo "Installing $DRIVER..."
+            yay -S --needed "$DRIVER"
+        else
+            echo "Skipped $DRIVER installation."
+        fi
+        read -rp "Install libva-nvidia-driver? [y/N]: " confirm
+        if [["$confirm" =~ ^[Yy]$ ]]; then
+            echo "Installing VAAPI drivers for NVIDIA..."
+            yay -S --needed libva-nvidia-driver
     fi
-  done
+}
 
-  if [ ${#to_install[@]} -ne 0 ]; then
-    echo "Installing: ${to_install[*]}"
-    yay -S --noconfirm "${to_install[@]}"
-  fi
-} 
 
 checkEnv() {
     checkArch
