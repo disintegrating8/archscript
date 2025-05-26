@@ -2,36 +2,10 @@
 
 . ./common-script.sh
 
-setup_bspwm() {
-    printf "%b\n" "${YELLOW}Installing BSPWM...${RC}"
-    sudo pacman -S --needed --noconfirm base-devel bspwm sxhkd polybar rofi picom libxcb flameshot lxappearance qt6ct qt5ct feh mate-polkit
-}
-
-qt_theme() {
-	sudo pacman -S --needed --noconfirm qt5ct qt6ct qt6-svg kvantum lxappearance-gtk3
-}
-
-setup_pipewire() {
-    printf "%b\n" "${YELLOW}Disabling pulseaudio to avoid conflicts...${RC}"
-    systemctl --user disable --now pulseaudio.socket pulseaudio.service
-    printf "%b\n" "${YELLOW}Installing pipewire if not already installed${RC}"
-    sudo pacman -S --needed --noconfirm pipewire wireplumber pipewire-audio pipewire-alsa pipewire-pulse sof-firmware
-    systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
-}
-
-setup_thunar() {
-    printf "%b\n" "${YELLOW}Installing thunar if not already installed${RC}"
-    sudo pacman -S --needed --noconfirm thunar thunar-volman tumbler ffmpegthumbnailer thunar-archive-plugin xarchiver
-}
 setup_dotfiles() {
     . ./dotfiles-setup.sh
     cd ~/dotfiles
     stow --adopt bspwm polybar rofi
-}
-
-setup_bluetooth() {
-    sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
-    sudo systemctl enable bluetooth.service
 }
 
 install_nerd_font() {
@@ -69,57 +43,6 @@ configure_backgrounds() {
     else
         # If the backgrounds directory already exists, print a message indicating that the download is being skipped
         printf "%b\n" "${GREEN}Path $BG_DIR exists for desktop backgrounds, skipping download of backgrounds${RC}"
-    fi
-}
-
-setupDisplayManager() {
-    printf "%b\n" "${YELLOW}Setting up Xorg${RC}"
-    sudo pacman -S --needed --noconfirm xorg-xinit xorg-server xorg-xrandr xorg-xinput
-    printf "%b\n" "${GREEN}Xorg installed successfully${RC}"
-    printf "%b\n" "${YELLOW}Setting up Display Manager${RC}"
-    currentdm="none"
-    for dm in gdm sddm lightdm; do
-        if command -v "$dm" >/dev/null 2>&1 || isServiceActive "$dm"; then
-            currentdm="$dm"
-            break
-        fi
-    done
-    printf "%b\n" "${GREEN}Current display manager: $currentdm${RC}"
-    if [ "$currentdm" = "none" ]; then
-        printf "%b\n" "${YELLOW}--------------------------${RC}" 
-        printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
-        printf "%b\n" "${YELLOW}1. SDDM ${RC}" 
-        printf "%b\n" "${YELLOW}2. LightDM ${RC}" 
-        printf "%b\n" "${YELLOW}3. GDM ${RC}"
-        printf "%b\n" "${YELLOW}4. Ly - TUI Display Manager ${RC}"
-        printf "%b\n" "${YELLOW}5. None ${RC}" 
-        printf "%b" "${YELLOW}Please select one: ${RC}"
-        read -r choice
-        case "$choice" in
-            1)
-                DM="sddm"
-                ;;
-            2)
-                DM="lightdm-gtk-greeter"
-                ;;
-            3)
-                DM="gdm"
-                ;;
-            4)
-                DM="ly"
-                ;;
-            5)
-                printf "%b\n" "${GREEN}No display manager will be installed${RC}"
-                return 0
-                ;;
-            *)
-                printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, 4, or 5.${RC}"
-                return 1
-                ;;
-        esac
-        sudo pacman -S --needed --noconfirm "$DM"
-        printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        sudo systemctl enable "$DM"
     fi
 }
 

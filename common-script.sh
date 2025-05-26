@@ -72,10 +72,10 @@ checkAURHelper() {
 
         printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
         sudo pacman -S --needed --noconfirm base-devel git
-        git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm && cd .. && rm -rf yay
+        git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd .. && rm -rf paru
 
-        if command_exists yay; then
-            AUR_HELPER="yay"
+        if command_exists paru; then
+            AUR_HELPER="paru"
             AUR_HELPER_CHECKED=true
         else
             printf "%b\n" "${RED}Failed to install AUR helper.${RC}"
@@ -96,19 +96,15 @@ checkCommandRequirements() {
 }
 
 checkSuperUser() {
-    ## Check SuperUser Group
-    SUPERUSERGROUP='wheel sudo root'
-    for sug in ${SUPERUSERGROUP}; do
-        if groups | grep -q "${sug}"; then
-            SUGROUP=${sug}
-            printf "%b\n" "${CYAN}Super user group ${SUGROUP}${RC}"
-            break
-        fi
-    done
-
-    ## Check if member of the sudo group.
+    # Check if running as root.
+    if [[ $EUID -eq 0 ]]; then
+        echo "${ERROR}  This script should ${WARNING}NOT${RESET} be executed as root!! Exiting......." | tee -a "$LOG"
+        printf "\n%.0s" {1..2} 
+        exit 1
+    fi
+    # Check if member of the sudo group.
     if ! groups | grep -q "${SUGROUP}"; then
-        printf "%b\n" "${RED}You need to be a member of the sudo group to run me!${RC}"
+        printf "%b\n" "${WARNING}You need to be a member of the sudo group to run me!${RC}"
         exit 1
     fi
 }
@@ -122,6 +118,32 @@ checkCurrentDirectoryWritable() {
     fi
 }
 
+# Function to check if a package is installed
+is_installed() {
+  pacman -Qi "$1" &> /dev/null
+}
+
+# Function to check if a package is installed
+is_group_installed() {
+  pacman -Qg "$1" &> /dev/null
+}
+
+# Function to install packages if not already installed
+install_packages() {
+  local packages=("$@")
+  local to_install=()
+
+  for pkg in "${packages[@]}"; do
+    if ! is_installed "$pkg" && ! is_group_installed "$pkg"; then
+      to_install+=("$pkg")
+    fi
+  done
+
+  if [ ${#to_install[@]} -ne 0 ]; then
+    echo "Installing: ${to_install[*]}"
+    yay -S --noconfirm "${to_install[@]}"
+  fi
+} 
 
 checkEnv() {
     checkArch
