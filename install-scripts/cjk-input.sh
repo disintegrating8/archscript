@@ -22,9 +22,6 @@ case "$choice" in
         ;;
 esac
 
-XPROFILE_FILE="$HOME/.xprofile"
-ENV_CONFIG=("GTK_IM_MODULE=fcitx5" "QT_IM_MODULE=fcitx5" "XMODIFIERS=@im=fcitx5")
-
 echo "Installing $METHOD..."
 
 if [ "$METHOD" = "fcitx5" ]; then
@@ -41,7 +38,12 @@ if [ "$METHOD" = "kime" ]; then
     install_package kime-bin
 fi
 
+XPROFILE_FILE="$HOME/.xprofile"
+ENV_CONFIG=("GTK_IM_MODULE=$METHOD" "QT_IM_MODULE=$METHOD" "XMODIFIERS=@im=$METHOD")
+
 echo "Ensuring $METHOD starts in $XPROFILE_FILE..."
-if ! grep -q "fcitx5" "$XPROFILE_FILE" 2>/dev/null; then
-    echo 'fcitx5 &' >> "$XPROFILE_FILE"
-fi
+for config in "${ENV_CONFIG[@]}"; do
+    if ! grep -q "$config" "$XPROFILE_FILE" 2>/dev/null; then
+        echo "$config" >> "$XPROFILE_FILE"
+    fi
+done

@@ -11,7 +11,18 @@ pipewire=(
     sof-firmware
 )
 
-############## WARNING: DO NOT EDIT BEYOND THIS LINE IF YOU DON'T KNOW WHAT YOU ARE DOING! ##############
+media=(
+  pamixer
+  pavucontrol
+  playerctl
+  cava
+  loupe
+  mpv
+  mpv-mpris
+  yt-dlp
+  libspng
+)
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Change the working directory to the parent directory of the script
@@ -32,6 +43,11 @@ systemctl --user disable --now pulseaudio.socket pulseaudio.service >> "$LOG" 2>
 echo -e "${NOTE} Installing ${SKY_BLUE}Pipewire${RESET} Packages..."
 for PIPEWIRE in "${pipewire[@]}"; do
     install_package "$PIPEWIRE" "$LOG"
+done
+
+echo -e "${NOTE} Installing ${SKY_BLUE}Media${RESET} Packages..."
+for MEDIA in "${media[@]}"; do
+    install_package "$MEDIA" "$LOG"
 done
 
 echo -e "${NOTE} Activating Pipewire Services..."
