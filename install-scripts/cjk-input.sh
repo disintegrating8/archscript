@@ -1,5 +1,15 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Change the working directory to the parent directory of the script
+PARENT_DIR="$SCRIPT_DIR/.."
+cd "$PARENT_DIR" || { echo "${ERROR} Failed to change directory to $PARENT_DIR"; exit 1; }
+# Source the global functions script
+if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
+  echo "Failed to source Global_functions.sh"
+  exit 1
+fi
+
 printf "%b\n" "${YELLOW}--------------------------${RC}" 
 printf "%b\n" "${YELLOW}Pick CJK Input Method ${RC}"
 printf "%b\n" "${YELLOW}1. Ibus ${RC}"
@@ -47,3 +57,5 @@ for config in "${ENV_CONFIG[@]}"; do
         echo "$config" >> "$XPROFILE_FILE"
     fi
 done
+
+printf "\n%.0s" {1..2}

@@ -138,7 +138,7 @@ if [ "$nvidia_detected" == "true" ]; then
 fi
 
 while true; do
-    wm_choice=$(whiptail --title "Window Manager Selection" --checklist "Choose your preferred window manager.\n\nNOTE: Select only 1 Window Manager!\nINFO: spacebar to select" 12 60 2 \
+    wm_choice=$(whiptail --title "Window Manager Selection" --checklist "Choose your preferred window manager.\n\nNOTE: Select only 1 Window Manager!\nINFO: spacebar to select" 12 60 3 \
         "dwm" "Suckless Dynamic Window Manager" "OFF" \
         "bspwm" "Binary Space Partitioning WM" "OFF" \
         "i3wm" "i3 Window Manager" "OFF" \
@@ -158,7 +158,7 @@ while true; do
 
     wm_choice=$(echo "$wm_choice" | tr -d '"')
 
-    # Check if multiple helpers were selected
+    # Check if multiple options were selected
     if [[ $(echo "$wm_choice" | wc -w) -ne 1 ]]; then
         whiptail --title "Error" --msgbox "You must select exactly one WM." 10 60 2
         continue  
@@ -166,6 +166,27 @@ while true; do
         break 
     fi
 done
+
+while true; do
+    cjk_choice=$(whiptail --title "CJK Input Method Selection" --checklist "Choose your preferred input method.\n\nINFO: spacebar to select" 12 60 3 \
+        "ibus" "with ibus-hangul" "OFF" \
+        "fcitx5" "with fcitx5-hangul" "OFF" \
+        "kime" "works the best on wayland + replaces nimf for x11" "OFF" \
+        3>&1 1>&2 2>&3)
+
+    if [ $? -ne 0 ]; then  
+        echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
+        exit 0
+    fi
+    
+    if [ -z "$cjk_choice" ]; then
+        whiptail --title "Skipping" --msgbox "Move to the next step" 10 60 2
+        break 
+    fi
+
+    echo "${INFO} - You selected: $cjk_choice"  | tee -a "$LOG"
+done
+
 
 options_command+=(
     "app_themes" "Install GTK and QT themes?" "OFF"
@@ -216,7 +237,7 @@ while true; do
         continue 
     fi
 
-    echo "👌 ${OK} You confirmed your choices. Proceeding with ${SKY_BLUE}KooL 🇵🇭 Hyprland Installation...${RESET}" | tee -a "$LOG"
+    echo "👌 ${OK} You confirmed your choices. Proceeding with ${SKY_BLUE}Installation...${RESET}" | tee -a "$LOG"
     break  
 done
 
