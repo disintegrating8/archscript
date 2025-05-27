@@ -47,6 +47,43 @@ checkFlatpak() {
     fi
 }
 
+checkAUR() {
+    echo "${INFO} - Checking if yay or paru is installed"
+    if ! command -v yay &>/dev/null && ! command -v paru &>/dev/null; then
+        echo "${CAT} - Neither yay nor paru found. Asking 🗣️ USER to select..."
+        while true; do
+            aur_helper=$(whiptail --title "Neither Yay nor Paru is installed" --checklist "Neither Yay nor Paru is installed. Choose one AUR.\n\nNOTE: Select only 1 AUR helper!\nINFO: spacebar to select" 12 60 2 \
+                "yay" "AUR Helper yay" "OFF" \
+                "paru" "AUR Helper paru" "OFF" \
+                3>&1 1>&2 2>&3)
+
+            if [ $? -ne 0 ]; then  
+                echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
+                exit 0 
+            fi
+
+            if [ -z "$aur_helper" ]; then
+                whiptail --title "Error" --msgbox "You must select at least one AUR helper to proceed." 10 60 2
+                continue 
+            fi
+
+            echo "${INFO} - You selected: $aur_helper as your AUR helper"  | tee -a "$LOG"
+
+            aur_helper=$(echo "$aur_helper" | tr -d '"')
+
+            # Check if multiple helpers were selected
+            if [[ $(echo "$aur_helper" | wc -w) -ne 1 ]]; then
+                whiptail --title "Error" --msgbox "You must select exactly one AUR helper." 10 60 2
+                continue  
+            else
+                break 
+            fi
+        done
+    else
+        echo "${NOTE} - AUR helper is already installed. Skipping AUR helper selection."
+    fi
+}
+
 checkArch() {
     case "$(uname -m)" in
         x86_64 | amd64) ARCH="x86_64" ;;
@@ -55,33 +92,6 @@ checkArch() {
     esac
 
     printf "%b\n" "${CYAN}System architecture: ${ARCH}${RC}"
-}
-
-checkAURHelper() {
-    ## Check & Install AUR helper
-    if [ -z "$AUR_HELPER_CHECKED" ]; then
-        AUR_HELPERS="yay paru"
-        for helper in ${AUR_HELPERS}; do
-            if command_exists "${helper}"; then
-                AUR_HELPER=${helper}
-                printf "%b\n" "${CYAN}Using ${helper} as AUR helper${RC}"
-                AUR_HELPER_CHECKED=true
-                return 0
-            fi
-        done
-
-        printf "%b\n" "${YELLOW}Installing yay as AUR helper...${RC}"
-        sudo pacman -S --needed --noconfirm base-devel git
-        git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm && cd .. && rm -rf paru
-
-        if command_exists paru; then
-            AUR_HELPER="paru"
-            AUR_HELPER_CHECKED=true
-        else
-            printf "%b\n" "${RED}Failed to install AUR helper.${RC}"
-            exit 1
-        fi
-    fi
 }
 
 checkCommandRequirements() {
@@ -118,11 +128,27 @@ checkCurrentDirectoryWritable() {
     fi
 }
 
+script_directory=install-scripts
+
+# Function to execute a script if it exists and make it executable
+execute_script() {
+    local script="$1"
+    local script_path="$script_directory/$script"
+    if [ -f "$script_path" ]; then
+        chmod +x "$script_path"
+        if [ -x "$script_path" ]; then
+            env "$script_path"
+        else
+            echo "Failed to make script '$script' executable."
+        fi
+    else
+        echo "Script '$script' not found in '$script_directory'."
+    fi
+}
+
 checkEnv() {
     checkArch
     checkCommandRequirements "curl groups sudo"
     checkCurrentDirectoryWritable
     checkSuperUser
-    checkAURHelper
-    checkFlatpak
 }
