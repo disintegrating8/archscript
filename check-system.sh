@@ -118,31 +118,6 @@ checkCurrentDirectoryWritable() {
     fi
 }
 
-checkNvida(){
-    # Check if NVIDIA GPU is detected
-    if lspci | grep -i "nvidia" &> /dev/null; then
-        echo "Jensen Huang's MoneyMaking SHIT Detected. Installing Nvidia Drivers..."
-        # Detect LTS kernel (running or installed)
-        if uname -r | grep -q "lts" || pacman -Q linux-lts &>/dev/null; then
-            DRIVER="nvidia-lts"
-        else
-            DRIVER="nvidia-dkms"
-        fi
-        read -rp "Install $DRIVER [y/N]: " confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            echo "Installing $DRIVER..."
-            yay -S --needed --noconfirm "$DRIVER"
-        else
-            echo "Skipped $DRIVER installation."
-        fi
-        read -rp "Install libva-nvidia-driver? [y/N]: " confirm
-        if [["$confirm" =~ ^[Yy]$ ]]; then
-            echo "Installing VAAPI drivers for NVIDIA..."
-            yay -S --needed --confirm libva-nvidia-driver
-    fi
-}
-
-
 checkEnv() {
     checkArch
     checkCommandRequirements "curl groups sudo"

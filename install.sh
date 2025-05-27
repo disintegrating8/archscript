@@ -47,6 +47,10 @@ if lspci | grep -i "nvidia" &> /dev/null; then
         echo "Skipped driver installation."
     fi
 
+# setup dotfiles first
+echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}"
+execute_script "dotfiles.sh"
+
 printf "%b\n" "${YELLOW}--------------------------${RC}" 
 printf "%b\n" "${YELLOW}Pick WM ${RC}" 
 printf "%b\n" "${YELLOW}1. DWM ${RC}" 
@@ -83,9 +87,6 @@ execute_script "pipewire.sh"
 
 echo "${INFO} Installing ${SKY_BLUE}necessary fonts...${RESET}"
 execute_script "fonts.sh"
-
-echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}"
-execute_script "dotfiles.sh"
 
 echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
 execute_script "InputGroup.sh"

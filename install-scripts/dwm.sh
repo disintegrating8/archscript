@@ -26,3 +26,9 @@ done
 cd "$HOME" && git clone https://github.com/ChrisTitusTech/dwm-titus.git # CD to Home directory to install dwm-titus
 cd dwm-titus/
 sudo make clean install
+
+printf "%b\n" "${YELLOW}Installing slstatus${RC}"
+cd slstatus/ 
+sudo make clean install
+cd ..
+
