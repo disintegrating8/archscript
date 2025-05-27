@@ -1,39 +1,47 @@
 #!/bin/bash
 
-ibus=(
-  ibus
-  ibus-hangul
-)
+printf "%b\n" "${YELLOW}--------------------------${RC}" 
+printf "%b\n" "${YELLOW}Pick CJK Input Method ${RC}"
+printf "%b\n" "${YELLOW}1. Ibus ${RC}"
+printf "%b\n" "${YELLOW}2. Fcitx ${RC}"
+printf "%b\n" "${YELLOW}3. Kime ${RC}"
+printf "%b" "${YELLOW}Please select one: ${RC}"
+read -r choice
+case "$choice" in
+    1)
+        METHOD="ibus"
+        ;;
+    2)
+        METHOD="fcitx5"
+        ;;
+    3)
+        METHOD="kime"
+        ;;
+    *)
+        printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, or 3.${RC}"
+        ;;
+esac
 
-fcitx=(
-  fcitx5-im
-  fcitx5-hangul
-)
+XPROFILE_FILE="$HOME/.xprofile"
+ENV_CONFIG=("GTK_IM_MODULE=fcitx5" "QT_IM_MODULE=fcitx5" "XMODIFIERS=@im=fcitx5")
 
-cjk_input(){        
-    printf "%b\n" "${YELLOW}--------------------------${RC}" 
-    printf "%b\n" "${YELLOW}Pick CJK Input Method ${RC}"
-    printf "%b\n" "${YELLOW}1. Ibus ${RC}"
-    printf "%b\n" "${YELLOW}2. Fcitx ${RC}"
-    printf "%b\n" "${YELLOW}3. Kime ${RC}"
-    printf "%b\n" "${YELLOW}4. None ${RC}"
-    printf "%b" "${YELLOW}Please select one: ${RC}"
-    read -r choice
-    case "$choice" in
-        1)
-            sudo pacman -S --needed --noconfirm ibus{,-hangul}
-            ;;
-        2)
-            sudo pacman -S --needed --noconfirm fcitx5-{im,hangul} 
-            ;;
-        3)
-            yay -S --needed --noconfirm kime-bin
-            ;;
-        4)
-            printf "%b\n" "${GREEN}No input method will be installed${RC}"\
-            ;;
-        *)
-            printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
-            ;;
-    esac
-}
+echo "Installing $METHOD..."
+
+if [ "$METHOD" = "fcitx5" ]; then
+    for PKG in fcitx5-im fcitx5-hangul;do
+        install_package "$PKG"
+    done
+fi
+if [ "$METHOD" = "ibus" ]; then
+    for PKG in ibus ibus-hangul;do
+        install_package "$PKG"
+    done
+fi
+if [ "$METHOD" = "kime" ]; then
+    install_package kime-bin
+fi
+
+echo "Ensuring $METHOD starts in $XPROFILE_FILE..."
+if ! grep -q "fcitx5" "$XPROFILE_FILE" 2>/dev/null; then
+    echo 'fcitx5 &' >> "$XPROFILE_FILE"
+fi

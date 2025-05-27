@@ -128,17 +128,17 @@ checkNvida(){
         else
             DRIVER="nvidia-dkms"
         fi
-        read -rp "Install $DRIVER driver? [y/N]: " confirm
+        read -rp "Install $DRIVER [y/N]: " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             echo "Installing $DRIVER..."
-            yay -S --needed "$DRIVER"
+            yay -S --needed --noconfirm "$DRIVER"
         else
             echo "Skipped $DRIVER installation."
         fi
         read -rp "Install libva-nvidia-driver? [y/N]: " confirm
         if [["$confirm" =~ ^[Yy]$ ]]; then
             echo "Installing VAAPI drivers for NVIDIA..."
-            yay -S --needed libva-nvidia-driver
+            yay -S --needed --confirm libva-nvidia-driver
     fi
 }
 

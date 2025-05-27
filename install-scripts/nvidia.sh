@@ -1,17 +1,18 @@
 #!/bin/bash
-# 💫 https://github.com/JaKooLit 💫 #
-# Nvidia Stuffs #
+
+if uname -r | grep -q "lts" || pacman -Q linux-lts &>/dev/null; then
+  DRIVER="nvidia-lts"
+else
+  DRIVER="nvidia-dkms"
+fi
 
 nvidia_pkg=(
-  nvidia-dkms
-  nvidia-settings
+  $DRIVER
   nvidia-utils
   libva
   libva-nvidia-driver
 )
 
-
-## WARNING: DO NOT EDIT BEYOND THIS LINE IF YOU DON'T KNOW WHAT YOU ARE DOING! ##
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Change the working directory to the parent directory of the script
@@ -24,20 +25,8 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-
-
 # Set the name of the log file to include the current date and time
 LOG="Install-Logs/install-$(date +%d-%H%M%S)_nvidia.log"
-
-
-# nvidia stuff
-printf "${YELLOW} Checking for other hyprland packages and remove if any..${RESET}\n"
-if pacman -Qs hyprland > /dev/null; then
-  printf "${YELLOW} Hyprland detected. removing to install Hyprland from official repo...${RESET}\n"
-    for hyprnvi in hyprland-git hyprland-nvidia hyprland-nvidia-git hyprland-nvidia-hidpi-git; do
-    sudo pacman -R --noconfirm "$hyprnvi" 2>/dev/null | tee -a "$LOG" || true
-    done
-fi
 
 # Install additional Nvidia packages
 printf "${YELLOW} Installing ${SKY_BLUE}Nvidia Packages and Linux headers${RESET}...\n"
