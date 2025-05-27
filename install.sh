@@ -141,7 +141,7 @@ while true; do
     wm_choice=$(whiptail --title "Window Manager Selection" --checklist "Choose your preferred window manager.\n\nNOTE: Select only 1 Window Manager!\nINFO: spacebar to select" 12 60 2 \
         "dwm" "Suckless Dynamic Window Manager" "OFF" \
         "bspwm" "Binary Space Partitioning WM" "OFF" \
-        "i3wm" "i3 Window Manager" \
+        "i3wm" "i3 Window Manager" "OFF" \
         3>&1 1>&2 2>&3)
 
     if [ $? -ne 0 ]; then  
