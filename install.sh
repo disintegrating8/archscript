@@ -44,17 +44,20 @@ clear
 
 printf "\n%.0s" {1..2}  
 echo -e "\e[35m
-	╦╔═┌─┐┌─┐╦    ╦ ╦┬ ┬┌─┐┬─┐┬  ┌─┐┌┐┌┌┬┐
-	╠╩╗│ ││ │║    ╠═╣└┬┘├─┘├┬┘│  ├─┤│││ ││ 2025
-	╩ ╩└─┘└─┘╩═╝  ╩ ╩ ┴ ┴  ┴└─┴─┘┴ ┴┘└┘─┴┘ Arch Linux
+██╗  ██╗ ██████╗ ██████╗  ██████╗     ██╗    ██╗███╗   ███╗███████╗
+╚██╗██╔╝██╔═══██╗██╔══██╗██╔════╝     ██║    ██║████╗ ████║██╔════╝
+ ╚███╔╝ ██║   ██║██████╔╝██║  ███╗    ██║ █╗ ██║██╔████╔██║███████╗
+ ██╔██╗ ██║   ██║██╔══██╗██║   ██║    ██║███╗██║██║╚██╔╝██║╚════██║
+██╔╝ ██╗╚██████╔╝██║  ██║╚██████╔╝    ╚███╔███╔╝██║ ╚═╝ ██║███████║ 2025
+╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝      ╚══╝╚══╝ ╚═╝     ╚═╝╚══════╝ Arch Linux
 \e[0m"
 printf "\n%.0s" {1..1} 
 
 # Welcome message using whiptail (for displaying information)
-whiptail --title "KooL Arch-Hyprland (2025) Install Script" \
-    --msgbox "Welcome to KooL Arch-Hyprland (2025) Install Script!!!\n\n\
+whiptail --title "XORG WMs (2025) Install Script" \
+    --msgbox "Welcome XORG WM (2025) Install Script!!!\n\n\
 ATTENTION: Run a full system update and Reboot first !!! (Highly Recommended)\n\n\
-NOTE: If you are installing on a VM, ensure to enable 3D acceleration else Hyprland may NOT start!" \
+NOTE: If you are installing on a VM, ensure to enable 3D acceleration!" \
     15 80
 
 # Ask if the user wants to proceed
@@ -66,7 +69,7 @@ if ! whiptail --title "Proceed with Installation?" \
     exit 1
 fi
 
-echo "👌 ${OK} 🇵🇭 ${MAGENTA}KooL..${RESET} ${SKY_BLUE}lets continue with the installation...${RESET}" | tee -a "$LOG"
+echo "👌 ${OK} ${RESET} ${SKY_BLUE}lets continue with the installation...${RESET}" | tee -a "$LOG"
 
 sleep 1
 printf "\n%.0s" {1..1}
@@ -78,7 +81,41 @@ if ! pacman -Qs pciutils > /dev/null; then
     printf "\n%.0s" {1..1}
 fi
 
-checkAUR
+# Check if yay or paru is installed
+echo "${INFO} - Checking if yay or paru is installed"
+if ! command -v yay &>/dev/null && ! command -v paru &>/dev/null; then
+    echo "${CAT} - Neither yay nor paru found. Asking 🗣️ USER to select..."
+    while true; do
+        aur_helper=$(whiptail --title "Neither Yay nor Paru is installed" --checklist "Neither Yay nor Paru is installed. Choose one AUR.\n\nNOTE: Select only 1 AUR helper!\nINFO: spacebar to select" 12 60 2 \
+            "yay" "AUR Helper yay" "OFF" \
+            "paru" "AUR Helper paru" "OFF" \
+            3>&1 1>&2 2>&3)
+
+        if [ $? -ne 0 ]; then  
+            echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
+            exit 0 
+        fi
+
+        if [ -z "$aur_helper" ]; then
+            whiptail --title "Error" --msgbox "You must select at least one AUR helper to proceed." 10 60 2
+            continue 
+        fi
+
+        echo "${INFO} - You selected: $aur_helper as your AUR helper"  | tee -a "$LOG"
+
+        aur_helper=$(echo "$aur_helper" | tr -d '"')
+
+        # Check if multiple helpers were selected
+        if [[ $(echo "$aur_helper" | wc -w) -ne 1 ]]; then
+            whiptail --title "Error" --msgbox "You must select exactly one AUR helper." 10 60 2
+            continue  
+        else
+            break 
+        fi
+    done
+else
+    echo "${NOTE} - AUR helper is already installed. Skipping AUR helper selection."
+fi
 
 # Check if NVIDIA GPU is detected
 nvidia_detected=false
