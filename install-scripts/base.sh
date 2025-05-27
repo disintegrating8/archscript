@@ -5,6 +5,15 @@ base=(
   base-devel
   archlinux-keyring
   findutils
+  curl
+  wget
+  jq
+  unzip
+  python
+  python-requests
+  python-pyquery
+  unzip
+  pacman-contrib
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

@@ -17,7 +17,6 @@ clear
 print_logo
 
 . ./common-script.sh
-. ./global-function.sh
 
 script_directory=install-scripts
 
@@ -36,6 +35,10 @@ execute_script() {
         echo "Script '$script' not found in '$script_directory'."
     fi
 }
+
+echo "${INFO} Installing ${SKY_BLUE}base...${RESET}"
+execute_script "base.sh"
+
 
 # Check if NVIDIA GPU is detected
 if lspci | grep -i "nvidia" &> /dev/null; then
@@ -113,9 +116,8 @@ fi
 
 read -p "Install zsh shell with Oh-My-Zsh? (y/n)" zsh
 if [[ $zsh =~ ^[Yy]$ ]]; then
-    execute_script "bluetooth.sh"
+    execute_script "zsh.sh"
 fi
-
 
 read -p "Are you installing on Asus ROG laptops? (y/n)" rog
 if [[ $rog =~ ^[Yy]$ ]]; then

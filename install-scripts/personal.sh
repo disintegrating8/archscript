@@ -2,11 +2,28 @@
 
 . ./common-script.sh
 
+utils=(
+  htop
+  btop
+  timeshift
+    )
 SYSTEM_UTILS=(htop btop lazygit stow fastfetch fzf zip unzip wget curl timeshift)
 
 DEV_TOOLS=(vim neovim yazi bat starship kitty git github-desktop-bin)
 
 APP=(brave-bin libreoffice-fresh mpv obs-studio gimp)
+
+media=(
+  pamixer
+  pavucontrol
+  playerctl
+  cava
+  loupe
+  mpv
+  mpv-mpris
+  yt-dlp
+  libspng
+)
 
 FONTS=(ttf-meslo-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji)
 
@@ -32,4 +49,3 @@ run_install() {
 checkEnv
 run_install
 
-echo "Setup complete! You may want to reboot your system."
