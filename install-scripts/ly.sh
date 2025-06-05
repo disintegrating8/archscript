@@ -2,13 +2,6 @@
 # 💫 https://github.com/JaKooLit 💫 #
 # SDDM Log-in Manager #
 
-sddm=(
-  qt6-5compat 
-  qt6-declarative 
-  qt6-svg
-  sddm
-)
-
 # login managers to attempt to disable
 login=(
   lightdm 
@@ -16,6 +9,7 @@ login=(
   gdm 
   lxdm 
   lxdm-gtk3
+  sddm
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -31,14 +25,10 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
 fi
 
 # Set the name of the log file to include the current date and time
-LOG="Install-Logs/install-$(date +%d-%H%M%S)_sddm.log"
+LOG="Install-Logs/install-$(date +%d-%H%M%S)_ly.log"
 
-
-# Install SDDM and SDDM theme
-printf "${NOTE} Installing sddm and dependencies........\n"
-  for package in "${sddm[@]}"; do
-  install_package "$package" "$LOG"
-  done 
+printf "${NOTE} Installing ly........\n"
+install_package ly "$LOG"
 
 printf "\n%.0s" {1..1}
 
@@ -59,8 +49,8 @@ for manager in "${login[@]}"; do
 done
 
 printf "\n%.0s" {1..1}
-printf "${INFO} Activating sddm service........\n"
-sudo systemctl enable sddm
+printf "${INFO} Activating ly service........\n"
+sudo systemctl enable ly
 
 wayland_sessions_dir=/usr/share/wayland-sessions
 [ ! -d "$wayland_sessions_dir" ] && { printf "$CAT - $wayland_sessions_dir not found, creating...\n"; sudo mkdir "$wayland_sessions_dir" 2>&1 | tee -a "$LOG"; }

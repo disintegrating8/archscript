@@ -12,15 +12,15 @@ pipewire=(
 )
 
 media=(
-  pamixer
-  pavucontrol
-  playerctl
-  cava
-  loupe
-  mpv
-  mpv-mpris
-  yt-dlp
-  libspng
+    pamixer
+    pavucontrol
+    playerctl
+    cava
+    loupe
+    mpv
+    mpv-mpris
+    yt-dlp
+    libspng
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
