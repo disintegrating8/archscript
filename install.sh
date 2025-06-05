@@ -1,7 +1,22 @@
 #!/bin/bash
 
 clear
-. ./common-script.sh
+
+# Set some colors for output messages
+OK="$(tput setaf 2)[OK]$(tput sgr0)"
+ERROR="$(tput setaf 1)[ERROR]$(tput sgr0)"
+NOTE="$(tput setaf 3)[NOTE]$(tput sgr0)"
+INFO="$(tput setaf 4)[INFO]$(tput sgr0)"
+WARN="$(tput setaf 1)[WARN]$(tput sgr0)"
+CAT="$(tput setaf 6)[ACTION]$(tput sgr0)"
+MAGENTA="$(tput setaf 5)"
+ORANGE="$(tput setaf 214)"
+WARNING="$(tput setaf 1)"
+YELLOW="$(tput setaf 3)"
+GREEN="$(tput setaf 2)"
+BLUE="$(tput setaf 4)"
+SKY_BLUE="$(tput setaf 6)"
+RESET="$(tput sgr0)"
 
 # Create Directory for Install Logs
 if [ ! -d Install-Logs ]; then
@@ -10,6 +25,13 @@ fi
 
 # Set the name of the log file to include the current date and time
 LOG="Install-Logs/WM-Install-Scripts-$(date +%d-%H%M%S).log"
+
+# Check if running as root. If root, script will exit
+if [[ $EUID -eq 0 ]]; then
+    echo "${ERROR}  This script should ${WARNING}NOT${RESET} be executed as root!! Exiting......." | tee -a "$LOG"
+    printf "\n%.0s" {1..2} 
+    exit 1
+fi
 
 # Check if PulseAudio package is installed
 if pacman -Qq | grep -qw '^pulseaudio$'; then
@@ -81,6 +103,25 @@ if ! pacman -Qs pciutils > /dev/null; then
     printf "\n%.0s" {1..1}
 fi
 
+# Path to the install-scripts directory
+script_directory=install-scripts
+
+# Function to execute a script if it exists and make it executable
+execute_script() {
+    local script="$1"
+    local script_path="$script_directory/$script"
+    if [ -f "$script_path" ]; then
+        chmod +x "$script_path"
+        if [ -x "$script_path" ]; then
+            env "$script_path"
+        else
+            echo "Failed to make script '$script' executable."
+        fi
+    else
+        echo "Script '$script' not found in '$script_directory'."
+    fi
+}
+
 # Check if yay or paru is installed
 echo "${INFO} - Checking if yay or paru is installed"
 if ! command -v yay &>/dev/null && ! command -v paru &>/dev/null; then
@@ -117,6 +158,33 @@ else
     echo "${NOTE} - AUR helper is already installed. Skipping AUR helper selection."
 fi
 
+# List of services to check for active login managers
+services=("gdm.service" "gdm3.service" "lightdm.service" "lxdm.service" "sddm.service")
+
+# Function to check if any login services are active
+check_services_running() {
+    active_services=()  # Array to store active services
+    for svc in "${services[@]}"; do
+        if systemctl is-active --quiet "$svc"; then
+            active_services+=("$svc")  
+        fi
+    done
+
+    if [ ${#active_services[@]} -gt 0 ]; then
+        return 0  
+    else
+        return 1  
+    fi
+}
+
+if check_services_running; then
+    active_list=$(printf "%s\n" "${active_services[@]}")
+
+    # Display the active login manager(s) in the whiptail message box
+    whiptail --title "Active non-ly login manager(s) detected" \
+        --msgbox "The following login manager(s) are active:\n\n$active_list\n\nIf you want to replace with ly, stop and disable the active services above, reboot before running this script\n\nYour option to install ly has now been removed\n\n- Ja " 23 80
+fi
+
 # Check if NVIDIA GPU is detected
 nvidia_detected=false
 if lspci | grep -i "nvidia" &> /dev/null; then
@@ -137,66 +205,21 @@ if [ "$nvidia_detected" == "true" ]; then
     )
 fi
 
-while true; do
-    wm_choice=$(whiptail --title "Window Manager Selection" --checklist "Choose your preferred window manager.\n\nNOTE: Select only 1 Window Manager!\nINFO: spacebar to select" 12 60 3 \
-        "dwm" "Suckless Dynamic Window Manager" "OFF" \
-        "bspwm" "Binary Space Partitioning WM" "OFF" \
-        "i3wm" "i3 Window Manager" "OFF" \
-        3>&1 1>&2 2>&3)
-
-    if [ $? -ne 0 ]; then  
-        echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
-        exit 0 
-    fi
-
-    if [ -z "$wm_choice" ]; then
-        whiptail --title "Error" --msgbox "You must select at least one WM to proceed." 10 60 2
-        continue 
-    fi
-
-    echo "${INFO} - You selected: $wm_choice"  | tee -a "$LOG"
-
-    wm_choice=$(echo "$wm_choice" | tr -d '"')
-
-    # Check if multiple options were selected
-    if [[ $(echo "$wm_choice" | wc -w) -ne 1 ]]; then
-        whiptail --title "Error" --msgbox "You must select exactly one WM." 10 60 2
-        continue  
-    else
-        break 
-    fi
-done
-
-while true; do
-    cjk_choice=$(whiptail --title "CJK Input Method Selection" --checklist "Choose your preferred input method.\n\nINFO: spacebar to select" 12 60 3 \
-        "ibus" "with ibus-hangul" "OFF" \
-        "fcitx5" "with fcitx5-hangul" "OFF" \
-        "kime" "works the best on wayland + replaces nimf for x11" "OFF" \
-        3>&1 1>&2 2>&3)
-
-    if [ $? -ne 0 ]; then
-        echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
-        exit 0
-    fi
-    
-    if [ -z "$cjk_choice" ]; then
-        whiptail --title "Skipping" --msgbox "Move to the next step" 10 60 2
-        break 
-    fi
-
-    echo "${INFO} - You selected: $cjk_choice"  | tee -a "$LOG"
-done
+# Conditionally add SDDM and SDDM theme options if no active login manager is found
+if ! check_services_running; then
+    options_command+=(
+        "ly" "Install & configure ly login manager?" "OFF"
+    )
+fi
 
 options_command+=(
     "app_themes" "Install GTK and QT themes?" "OFF"
     "input_group" "Add your USER to input group for some polybar? functionality?" "OFF"
-    "sddm" "Install & configure SDDM login manager?" "OFF"
-    "sddm_theme" "Download & Install Additional SDDM theme?" "OFF"
+    "fcitx" "Install & configure fcitx5 input method for cjk inputs?" "OFF"
     "bluetooth" "Do you want script to configure Bluetooth?" "OFF"
     "thunar" "Do you want Thunar file manager to be installed?" "OFF"
     "zsh" "Install zsh shell with Oh-My-Zsh?" "OFF"
     "pokemon" "Add Pokemon color scripts to your terminal?" "OFF"
-    "rog" "Are you installing on Asus ROG laptops?" "OFF"
 )
 
 # Capture the selected options before the while loop starts
@@ -244,45 +267,25 @@ printf "\n%.0s" {1..1}
 
 # Ensuring base-devel is installed
 execute_script "base.sh"
-sleep 1
 execute_script "pacman.sh"
-sleep 1
-# setup dotfiles first
-echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}"
+
+if [ "$aur_helper" == "paru" ]; then
+    execute_script "paru.sh"
+elif [ "$aur_helper" == "yay" ]; then
+    execute_script "yay.sh"
+fi
+
+echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}" | tee -a "$LOG"
 execute_script "dotfiles.sh"
-sleep 1
 
-if [ "$wm_choice" == "dwm"]; then
-    execute_script "bspwm.sh"
-fi
-if [ "$wm_choice" == "bspwm"]; then
-    execute_script "bspwm.sh"
-fi
-if [ "$wm_choice" == "i3wm"]; then
-    execute_script "bspwm.sh"
-fi
+echo "${INFO} Installing ${SKY_BLUE}i3wm packages...${RESET}" | tee -a "$LOG"
+execute_script "i3wm.sh"
 
-if [ "$cjk_choice" == "ibus"]; then
-    execute_script "ibus.sh"
-fi
-if [ "$cjk_choice" == "fcitx5"]; then
-    execute_script "fcitx.sh"
-fi
-if [ "$cjk_choice" == "kime"]; then
-    execute_script "kime.sh"
-fi
- 
-sleep 1
-
-# Running scripts that apply to all WM
 echo "${INFO} Configuring ${SKY_BLUE}pipewire...${RESET}"
 execute_script "pipewire.sh"
 
 echo "${INFO} Installing ${SKY_BLUE}necessary fonts...${RESET}"
 execute_script "fonts.sh"
-
-echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
-execute_script "InputGroup.sh"
 
 # Clean up the selected options (remove quotes and trim spaces)
 selected_options=$(echo "$selected_options" | tr -d '"' | tr -s ' ')
@@ -293,14 +296,14 @@ IFS=' ' read -r -a options <<< "$selected_options"
 # Loop through selected options
 for option in "${options[@]}"; do
     case "$option" in
-        sddm)
+        ly)
             if check_services_running; then
                 active_list=$(printf "%s\n" "${active_services[@]}")
-                whiptail --title "Error" --msgbox "One of the following login services is running:\n$active_list\n\nPlease stop & disable it or DO not choose SDDM." 12 60
+                whiptail --title "Error" --msgbox "One of the following login services is running:\n$active_list\n\nPlease stop & disable it or DO not choose ly." 12 60
                 exec "$0"  
             else
-                echo "${INFO} Installing and configuring ${SKY_BLUE}SDDM...${RESET}" | tee -a "$LOG"
-                execute_script "sddm.sh"
+                echo "${INFO} Installing and configuring ${SKY_BLUE}ly...${RESET}" | tee -a "$LOG"
+                execute_script "ly.sh"
             fi
             ;;
         nvidia)
@@ -319,6 +322,10 @@ for option in "${options[@]}"; do
             echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
             execute_script "InputGroup.sh"
             ;;
+        fcitx)
+            echo "${INFO} Configuring ${SKY_BLUE}fcitx...${RESET}" | tee -a "$LOG"
+            execute_script "fcitx.sh"
+            ;;
         bluetooth)
             echo "${INFO} Configuring ${SKY_BLUE}Bluetooth...${RESET}" | tee -a "$LOG"
             execute_script "bluetooth.sh"
@@ -328,10 +335,6 @@ for option in "${options[@]}"; do
             execute_script "thunar.sh"
             execute_script "thunar_default.sh"
             ;;
-        sddm_theme)
-            echo "${INFO} Downloading & Installing ${SKY_BLUE}Additional SDDM theme...${RESET}" | tee -a "$LOG"
-            execute_script "sddm_theme.sh"
-            ;;
         zsh)
             echo "${INFO} Installing ${SKY_BLUE}zsh with Oh-My-Zsh...${RESET}" | tee -a "$LOG"
             execute_script "zsh.sh"
@@ -339,10 +342,6 @@ for option in "${options[@]}"; do
         pokemon)
             echo "${INFO} Adding ${SKY_BLUE}Pokemon color scripts to terminal...${RESET}" | tee -a "$LOG"
             execute_script "zsh_pokemon.sh"
-            ;;
-        rog)
-            echo "${INFO} Installing ${SKY_BLUE}ROG laptop packages...${RESET}" | tee -a "$LOG"
-            execute_script "rog.sh"
             ;;
         *)
             echo "Unknown option: $option" | tee -a "$LOG"
