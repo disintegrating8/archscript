@@ -9,16 +9,16 @@ for dm in gdm sddm lightdm; do
         break
     fi
 done
-printf "%b\n" "${GREEN}Current display manager: $currentdm${RC}"
+printf "%b\n" "Current display manager: $currentdm"
 if [ "$currentdm" = "none" ]; then
-    printf "%b\n" "${YELLOW}--------------------------${RC}" 
-    printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
-    printf "%b\n" "${YELLOW}1. SDDM ${RC}" 
-    printf "%b\n" "${YELLOW}2. LightDM ${RC}" 
+    printf "%b\n" "${YELLOW}--------------------------" 
+    printf "%b\n" "${YELLOW}Pick your Display Manager" 
+    printf "%b\n" "${YELLOW}1. SDDM" 
+    printf "%b\n" "${YELLOW}2. LightDM" 
     printf "%b\n" "${YELLOW}3. GDM ${RC}"
-    printf "%b\n" "${YELLOW}4. Ly - TUI Display Manager ${RC}"
-    printf "%b\n" "${YELLOW}5. None ${RC}" 
-    printf "%b" "${YELLOW}Please select one: ${RC}"
+    printf "%b\n" "${YELLOW}4. Ly - TUI Display Manager"
+    printf "%b\n" "${YELLOW}5. None" 
+    printf "%b" "${YELLOW}Please select one:"
     read -r choice
     case "$choice" in
         1)
@@ -43,7 +43,7 @@ if [ "$currentdm" = "none" ]; then
             ;;
     esac
     sudo pacman -S --needed --noconfirm "$DM"
-    printf "%b\n" "${GREEN}$DM installed successfully${RC}"
+    printf "%b\n" "$DM installed successfully"
     sudo systemctl enable "$DM"
 fi
 

@@ -174,7 +174,7 @@ while true; do
         "kime" "works the best on wayland + replaces nimf for x11" "OFF" \
         3>&1 1>&2 2>&3)
 
-    if [ $? -ne 0 ]; then  
+    if [ $? -ne 0 ]; then
         echo "❌ ${INFO} You cancelled the selection. ${YELLOW}Goodbye!${RESET}" | tee -a "$LOG"
         exit 0
     fi
@@ -186,7 +186,6 @@ while true; do
 
     echo "${INFO} - You selected: $cjk_choice"  | tee -a "$LOG"
 done
-
 
 options_command+=(
     "app_themes" "Install GTK and QT themes?" "OFF"
@@ -255,11 +254,24 @@ sleep 1
 
 if [ "$wm_choice" == "dwm"]; then
     execute_script "bspwm.sh"
+fi
 if [ "$wm_choice" == "bspwm"]; then
     execute_script "bspwm.sh"
+fi
 if [ "$wm_choice" == "i3wm"]; then
     execute_script "bspwm.sh"
-   
+fi
+
+if [ "$cjk_choice" == "ibus"]; then
+    execute_script "ibus.sh"
+fi
+if [ "$cjk_choice" == "fcitx5"]; then
+    execute_script "fcitx.sh"
+fi
+if [ "$cjk_choice" == "kime"]; then
+    execute_script "kime.sh"
+fi
+ 
 sleep 1
 
 # Running scripts that apply to all WM

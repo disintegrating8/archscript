@@ -26,8 +26,10 @@ done
 cd "$HOME" && git clone https://github.com/ChrisTitusTech/dwm-titus.git # CD to Home directory to install dwm-titus
 cd dwm-titus/
 sudo make clean install
+cd ..
+echo "DWM Build Complete" 2>&1 | tee -a "$LOG"
 
-printf "%b\n" "${YELLOW}Installing slstatus${RC}"
+echo "Installing slstatus"
 cd slstatus/ 
 sudo make clean install
 cd ..
