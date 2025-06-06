@@ -277,8 +277,8 @@ fi
 echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}" | tee -a "$LOG"
 execute_script "dotfiles.sh"
 
-echo "${INFO} Installing ${SKY_BLUE}i3wm packages...${RESET}" | tee -a "$LOG"
-execute_script "i3wm.sh"
+echo "${INFO} Installing ${SKY_BLUE}dwm packages...${RESET}" | tee -a "$LOG"
+execute_script "dwm.sh"
 
 echo "${INFO} Configuring ${SKY_BLUE}pipewire...${RESET}"
 execute_script "pipewire.sh"
