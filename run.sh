@@ -1,10 +1,6 @@
 #!/bin/bash
 
-RC='\033[0m'
-RED='\033[31m'
-YELLOW='\033[33m'
-CYAN='\033[36m'
-GREEN='\033[32m'
+# Set some colors for output messages
 OK="$(tput setaf 2)[OK]$(tput sgr0)"
 ERROR="$(tput setaf 1)[ERROR]$(tput sgr0)"
 NOTE="$(tput setaf 3)[NOTE]$(tput sgr0)"
@@ -21,56 +17,33 @@ SKY_BLUE="$(tput setaf 6)"
 RESET="$(tput sgr0)"
 
 # Variables
-REPO_URL="https://github.com/disintegrating8/archscript.git"
-REPO_DIR="$HOME/archscript"
+Distro="archscript"
+Github_URL="https://github.com/disintegrating8/$Distro.git"
+Distro_DIR="$HOME/$Distro"
 
-# Check if git is installed
+printf "\n%.0s" {1..1}
+
 if ! command -v git &> /dev/null
 then
     echo "${INFO} Git not found! ${SKY_BLUE}Installing Git...${RESET}"
     if ! sudo pacman -S git --noconfirm; then
-        echo "Failed to install Git. Exiting."
+        echo "${ERROR} Failed to install Git. Exiting."
         exit 1
     fi
 fi
 
-if [ -d "$REPO_DIR" ]; then
-    echo "${YELLOW}$REPO_DIR exists. Updating the repository... ${RESET}"
-    cd "$REPO_DIR"
+printf "\n%.0s" {1..1}
+
+if [ -d "$Distro_DIR" ]; then
+    echo "${YELLOW}$Distro_DIR exists. Updating the repository... ${RESET}"
+    cd "$Distro_DIR"
     git stash && git pull
+    chmod +x install.sh
+    ./install.sh
 else
     echo "${MAGENTA}$Distro_DIR does not exist. Cloning the repository...${RESET}"
-    git clone --depth=1 "$REPO_URL" "$REPO_DIR"
-    cd "$REPO_DIR"
+    git clone --depth=1 "$Github_URL" "$Distro_DIR"
+    cd "$Distro_DIR"
+    chmod +x install.sh
+    ./install.sh
 fi
-
-printf "%b\n" "${YELLOW}--------------------------${RC}" 
-printf "%b\n" "${YELLOW}What do you want to do? ${RC}" 
-printf "%b\n" "${YELLOW}1. Run Arch-Titus ${RC}" 
-printf "%b\n" "${YELLOW}2. BSPWM Setup ${RC}" 
-printf "%b\n" "${YELLOW}3. Gnome Tiling Setup ${RC}" 
-printf "%b\n" "${YELLOW}4. Install Applications ${RC}" 
-printf "%b" "${YELLOW}Please select one: ${RC}"
-read -r choice
-case "$choice" in
-    1)
-        chmod +x server-setup.sh
-        ./server-setup.sh
-        ;;
-    2)
-        chmod +x bspwm-setup.sh
-        ./bspwm-setup.sh
-        ;;
-    3)
-        chmod +x gnome-setup.sh
-        ./gnome-setup.sh
-        ;;
-    4)
-        chmod +x install.sh
-        ./install.sh
-        ;;       
-    *)
-        printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
-        return 1
-        ;;
-esac

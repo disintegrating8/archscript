@@ -218,8 +218,7 @@ options_command+=(
     "fcitx" "Install & configure fcitx5 input method for cjk inputs?" "OFF"
     "bluetooth" "Do you want script to configure Bluetooth?" "OFF"
     "thunar" "Do you want Thunar file manager to be installed?" "OFF"
-    "zsh" "Install zsh shell with Oh-My-Zsh?" "OFF"
-    "pokemon" "Add Pokemon color scripts to your terminal?" "OFF"
+    "zsh" "Install zsh shell with starship?" "OFF"
 )
 
 # Capture the selected options before the while loop starts
@@ -336,12 +335,8 @@ for option in "${options[@]}"; do
             execute_script "thunar_default.sh"
             ;;
         zsh)
-            echo "${INFO} Installing ${SKY_BLUE}zsh with Oh-My-Zsh...${RESET}" | tee -a "$LOG"
+            echo "${INFO} Installing ${SKY_BLUE}zsh with starship...${RESET}" | tee -a "$LOG"
             execute_script "zsh.sh"
-            ;;
-        pokemon)
-            echo "${INFO} Adding ${SKY_BLUE}Pokemon color scripts to terminal...${RESET}" | tee -a "$LOG"
-            execute_script "zsh_pokemon.sh"
             ;;
         *)
             echo "Unknown option: $option" | tee -a "$LOG"

@@ -1,19 +1,15 @@
 #!/bin/bash
-# 💫 https://github.com/JaKooLit 💫 #
-# zsh and oh my zsh#
 
 zsh_pkg=(
   lsd
-  mercurial
   zsh
+  zsh-autosuggestions
+  zsh-syntax-highlighting
   zsh-completions
-)
-
-zsh_pkg2=(
   fzf
+  starship
 )
 
-## WARNING: DO NOT EDIT BEYOND THIS LINE IF YOU DON'T KNOW WHAT YOU ARE DOING! ##
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Change the working directory to the parent directory of the script
@@ -26,8 +22,6 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-
-
 # Set the name of the log file to include the current date and time
 LOG="Install-Logs/install-$(date +%d-%H%M%S)_zsh.log"
 
@@ -37,8 +31,6 @@ for ZSH in "${zsh_pkg[@]}"; do
   install_package "$ZSH" "$LOG"
 done 
 
-
-
 # Check if the zsh-completions directory exists
 if [ -d "zsh-completions" ]; then
     rm -rf zsh-completions
@@ -46,26 +38,6 @@ fi
 
 # Install Oh My Zsh, plugins, and set zsh as default shell
 if command -v zsh >/dev/null; then
-  printf "${NOTE} Installing ${SKY_BLUE}Oh My Zsh and plugins${RESET} ...\n"
-  if [ ! -d "$HOME/.oh-my-zsh" ]; then  
-    sh -c "$(curl -fsSL https://install.ohmyz.sh)" "" --unattended  	       
-  else
-    echo "${INFO} Directory .oh-my-zsh already exists. Skipping re-installation." 2>&1 | tee -a "$LOG"
-  fi
-  
-  # Check if the directories exist before cloning the repositories
-  if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-      git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 
-  else
-      echo "${INFO} Directory zsh-autosuggestions already exists. Cloning Skipped." 2>&1 | tee -a "$LOG"
-  fi
-
-  if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-      git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 
-  else
-      echo "${INFO} Directory zsh-syntax-highlighting already exists. Cloning Skipped." 2>&1 | tee -a "$LOG"
-  fi
-  
   # Check if ~/.zshrc and .zprofile exists, create a backup, and copy the new configuration
   if [ -f "$HOME/.zshrc" ]; then
       cp -b "$HOME/.zshrc" "$HOME/.zshrc-backup" || true
@@ -96,17 +68,6 @@ if command -v zsh >/dev/null; then
     echo "${NOTE} Your shell is already set to ${MAGENTA}zsh${RESET}."
   fi
   
-fi
-
-# Installing core zsh packages
-printf "\n%s - Installing ${SKY_BLUE}fzf${RESET} .... \n" "${NOTE}"
-for ZSH2 in "${zsh_pkg2[@]}"; do
-  install_package "$ZSH2" "$LOG"
-done
-
-# copy additional oh-my-zsh themes from assets
-if [ -d "$HOME/.oh-my-zsh/themes" ]; then
-    cp -r assets/add_zsh_theme/* ~/.oh-my-zsh/themes >> "$LOG" 2>&1
 fi
 
 printf "\n%.0s" {1..2}

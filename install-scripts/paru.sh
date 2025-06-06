@@ -4,8 +4,6 @@
 
 pkg="paru-bin"
 
-## WARNING: DO NOT EDIT BEYOND THIS LINE IF YOU DON'T KNOW WHAT YOU ARE DOING! ##
-# Set the name of the log file to include the current date and time
 LOG="install-$(date +%d-%H%M%S)_yay.log"
 
 # Set some colors for output messages

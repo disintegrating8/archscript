@@ -1,17 +1,30 @@
 #!/bin/bash
 
-. ./common-script.sh
 
 utils=(
   htop
   btop
   timeshift
-    )
-SYSTEM_UTILS=(htop btop lazygit stow fastfetch fzf zip unzip wget curl timeshift)
-
-DEV_TOOLS=(vim neovim yazi bat starship kitty git github-desktop-bin)
-
-APP=(brave-bin libreoffice-fresh mpv obs-studio gimp)
+  fzf
+  zip
+  unzip
+  wget
+  curl 
+  timeshift
+  neovim
+  bat
+)
+apps=(
+  github-desktop-bin
+  brave-bin
+  libreoffice-fresh
+  mpv
+  obs-studio
+  gimp
+  steam
+  gamescope
+  gamemode
+)
 
 FONTS=(ttf-meslo-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji)
 
