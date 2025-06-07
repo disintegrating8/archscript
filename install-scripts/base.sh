@@ -12,7 +12,6 @@ base=(
   python
   python-requests
   python-pyquery
-  unzip
   pacman-contrib
 )
 

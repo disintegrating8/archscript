@@ -2,7 +2,6 @@
 
 fonts=(
   adobe-source-code-pro-fonts 
-  noto-fonts-emoji
   otf-font-awesome 
   ttf-droid 
   ttf-fira-code
@@ -12,6 +11,8 @@ fonts=(
   ttf-victor-mono
   ttf-meslo-nerd
   noto-fonts
+  noto-fonts-emoji
+  noto-fonts-cjk
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

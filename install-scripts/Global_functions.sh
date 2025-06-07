@@ -70,6 +70,27 @@ install_package_pacman() {
   fi
 }
 
+install_package_flatpak() {
+  # Check if the Flatpak app is already installed
+  if flatpak info "$1" &>/dev/null; then
+    echo -e "${INFO} ${MAGENTA}$1${RESET} is already installed. Skipping..."
+  else
+    # Run flatpak install and redirect all output to a log file
+    (
+      stdbuf -oL flatpak install -y "$1" 2>&1
+    ) >> "$LOG" 2>&1 &
+    PID=$!
+    show_progress $PID "$1"
+
+    # Double check if Flatpak app is installed
+    if flatpak info "$1" &>/dev/null; then
+      echo -e "${OK} Flatpak package ${YELLOW}$1${RESET} has been successfully installed!"
+    else
+      echo -e "\n${ERROR} ${YELLOW}$1${RESET} failed to install. Please check the $LOG. You may need to install manually."
+    fi
+  fi
+}
+
 ISAUR=$(command -v yay || command -v paru)
 # Function to install packages with either yay or paru
 install_package() {

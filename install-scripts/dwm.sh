@@ -43,8 +43,8 @@ for PKG1 in "${dwm_package[@]}"; do
   install_package "$PKG1" "$LOG"
 done
 
-cd "$HOME" && git clone https://github.com/ChrisTitusTech/dwm-titus.git
-cd dwm-titus/
+cd "$HOME" && git clone https://github.com/disintegrating8/suckless.git
+cd suckless/
 sudo make clean install
 
 # install sl_status

@@ -49,4 +49,10 @@ for DIR1 in gtk-3.0 Thunar xfce4; do
   fi
 done
 
+printf "${INFO} Setting ${SKY_BLUE}Thunar${RESET} as default file manager...\n"  
+ 
+xdg-mime default thunar.desktop inode/directory
+xdg-mime default thunar.desktop application/x-wayland-gnome-saved-search
+echo "${OK} ${MAGENTA}Thunar${RESET} is now set as the default file manager." | tee -a "$LOG"
+
 printf "\n%.0s" {1..2}
