@@ -214,6 +214,7 @@ fi
 
 options_command+=(
     "app_themes" "Install GTK and QT themes?" "OFF"
+    "wallpaper" "Install wallpapers?" "OFF"
     "input_group" "Add your USER to input group?" "OFF"
     "fcitx" "Install & configure fcitx5 input method for cjk inputs?" "OFF"
     "bluetooth" "Do you want script to configure Bluetooth?" "OFF"
@@ -325,6 +326,10 @@ for option in "${options[@]}"; do
         app_themes)
             echo "${INFO} Installing ${SKY_BLUE}GTK themes...${RESET}" | tee -a "$LOG"
             execute_script "gtk_themes.sh"
+            ;;
+        wallpaper)
+            echo "${INFO} Installing ${SKY_BLUE}wallpaper...${RESET}" | tee -a "$LOG"
+            execute_script "backgrounds.sh"
             ;;
         input_group)
             echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
