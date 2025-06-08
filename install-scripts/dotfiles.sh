@@ -11,7 +11,50 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-DIRS=(Kvantum qt5ct qt6ct kitty nvim zsh fastfetch starship)
+# Function to create a unique backup directory name with month, day, hours, and minutes
+get_backup_dirname() {
+  local timestamp
+  timestamp=$(date +"%m%d_%H%M")
+  echo "back-up_${timestamp}"
+}
+
+DIRS="Kvantum qt5ct qt6ct zsh nvim kitty fastfetch starship"
+STOW_DIR="$HOME/dotfiles"
+
+run_stow() {
+  for DIR_NAME in $DIRS; do
+    echo -e "\n🔧 Processing ${DIR_NAME}..."
+
+    # Find all files in the stow source directory
+    TARGET_FILES=$(find "$STOW_DIR/$DIR_NAME" -type f)
+
+    for FILE in $TARGET_FILES; do
+      # Remove $STOW_DIR/$DIR_NAME/ prefix to get the relative path
+      REL_PATH="${FILE#"$STOW_DIR/$DIR_NAME/"}"
+      DEST="$HOME/$REL_PATH"
+
+      # If destination exists and is not a symlink, back it up
+      if [ -e "$DEST" ] && [ ! -L "$DEST" ]; then
+        BACKUP_SUFFIX=$(get_backup_dirname)
+        BACKUP_PATH="$DEST.backup-$BACKUP_SUFFIX"
+        echo "📦 Backing up $DEST → $BACKUP_PATH"
+        mkdir -p "$(dirname "$BACKUP_PATH")"
+        mv "$DEST" "$BACKUP_PATH"
+      fi
+    done
+
+    # Now safely stow
+    echo "📁 Stowing $DIR_NAME..."
+    stow -d "$STOW_DIR" -t "$HOME" "$DIR_NAME"
+
+    if [ $? -eq 0 ]; then
+      echo "✅ $DIR_NAME stowed successfully!"
+    else
+      echo "❌ Failed to stow $DIR_NAME."
+      exit 1
+    fi
+  done
+}
 
 # Check if stow installed
 if ! command -v stow &> /dev/null
@@ -22,12 +65,6 @@ then
     exit 1
   fi
 fi
-
-run_stow() {
-  for DIR in "${DIRS[@]}"; do
-    stow_dir "$DIR" "$LOG"
-  done
-}
 
 # Check if dotfiles exists
 printf "${NOTE} Cloning and Installing ${SKY_BLUE}Dotfiles${RESET}....\n"

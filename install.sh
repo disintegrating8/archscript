@@ -18,6 +18,8 @@ BLUE="$(tput setaf 4)"
 SKY_BLUE="$(tput setaf 6)"
 RESET="$(tput sgr0)"
 
+sudo pacman -Syu
+
 # Create Directory for Install Logs
 if [ ! -d Install-Logs ]; then
     mkdir Install-Logs
@@ -213,13 +215,9 @@ if ! check_services_running; then
 fi
 
 options_command+=(
-    "app_themes" "Install GTK and QT themes?" "OFF"
-    "wallpaper" "Install wallpapers?" "OFF"
-    "input_group" "Add your USER to input group?" "OFF"
     "fcitx" "Install & configure fcitx5 input method for cjk inputs?" "OFF"
     "bluetooth" "Do you want script to configure Bluetooth?" "OFF"
     "thunar" "Do you want Thunar file manager to be installed?" "OFF"
-    "zsh" "Install zsh shell with starship?" "OFF"
     "personal" "Install personal packages and flatpak?" "OFF"
 )
 
@@ -268,9 +266,7 @@ printf "\n%.0s" {1..1}
 
 # Ensuring base-devel is installed
 execute_script "base.sh"
-sleep 1
 execute_script "pacman.sh"
-sleep1
 
 if [ "$aur_helper" == "paru" ]; then
     execute_script "paru.sh"
@@ -278,23 +274,29 @@ elif [ "$aur_helper" == "yay" ]; then
     execute_script "yay.sh"
 fi
 
-sleep 1
-
 echo "${INFO} Installing ${SKY_BLUE}disintegrating8/dotfiles...${RESET}" | tee -a "$LOG"
-sleep 1
 execute_script "dotfiles.sh"
 
 echo "${INFO} Installing ${SKY_BLUE}dwm packages...${RESET}" | tee -a "$LOG"
-sleep 1
 execute_script "dwm.sh"
 
 echo "${INFO} Configuring ${SKY_BLUE}pipewire...${RESET}" | tee -a "$LOG"
-sleep 1
 execute_script "pipewire.sh"
 
 echo "${INFO} Installing ${SKY_BLUE}necessary fonts...${RESET}" | tee -a "$LOG"
-sleep 1
 execute_script "fonts.sh"
+
+echo "${INFO} Installing ${SKY_BLUE}GTK themes...${RESET}" | tee -a "$LOG"
+execute_script "app_themes.sh"
+
+echo "${INFO} Installing ${SKY_BLUE}wallpaper...${RESET}" | tee -a "$LOG"
+execute_script "backgrounds.sh"
+
+echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
+execute_script "InputGroup.sh"
+
+echo "${INFO} Installing ${SKY_BLUE}zsh with starship...${RESET}" | tee -a "$LOG"
+execute_script "zsh.sh"
 
 # Clean up the selected options (remove quotes and trim spaces)
 selected_options=$(echo "$selected_options" | tr -d '"' | tr -s ' ')
@@ -322,18 +324,6 @@ for option in "${options[@]}"; do
         nouveau)
             echo "${INFO} blacklisting ${SKY_BLUE}nouveau${RESET}"
             execute_script "nvidia_nouveau.sh" | tee -a "$LOG"
-;;
-        app_themes)
-            echo "${INFO} Installing ${SKY_BLUE}GTK themes...${RESET}" | tee -a "$LOG"
-            execute_script "app_themes.sh"
-            ;;
-        wallpaper)
-            echo "${INFO} Installing ${SKY_BLUE}wallpaper...${RESET}" | tee -a "$LOG"
-            execute_script "backgrounds.sh"
-            ;;
-        input_group)
-            echo "${INFO} Adding user into ${SKY_BLUE}input group...${RESET}" | tee -a "$LOG"
-            execute_script "InputGroup.sh"
             ;;
         fcitx)
             echo "${INFO} Configuring ${SKY_BLUE}fcitx...${RESET}" | tee -a "$LOG"
@@ -346,10 +336,6 @@ for option in "${options[@]}"; do
         thunar)
             echo "${INFO} Installing ${SKY_BLUE}Thunar file manager...${RESET}" | tee -a "$LOG"
             execute_script "thunar.sh"
-            ;;
-        zsh)
-            echo "${INFO} Installing ${SKY_BLUE}zsh with starship...${RESET}" | tee -a "$LOG"
-            execute_script "zsh.sh"
             ;;
         personal)
             echo "${INFO} Installing ${SKY_BLUE}personal packages...${RESET}" | tee -a "$LOG"
