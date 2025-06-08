@@ -45,7 +45,7 @@ run_stow() {
 
     # Now safely stow
     echo "📁 Stowing $DIR_NAME..."
-    stow -d "$STOW_DIR" -t "$HOME" "$DIR_NAME"
+    stow "$DIR_NAME"
 
     if [ $? -eq 0 ]; then
       echo "✅ $DIR_NAME stowed successfully!"

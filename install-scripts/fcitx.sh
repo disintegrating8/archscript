@@ -20,4 +20,4 @@ fi
 printf "${NOTE} Installing ${SKY_BLUE}Fcitx5${RESET} Packages...\n"
  for PKG in "${fcitx_pkg[@]}"; do
    install_package "$PKG" "$LOG"
-  done
+ done
