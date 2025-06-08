@@ -69,6 +69,7 @@ fi
 # Check if dotfiles exists
 printf "${NOTE} Cloning and Installing ${SKY_BLUE}Dotfiles${RESET}....\n"
 
+cd "$HOME"
 if [ -d dotfiles ]; then
   cd dotfiles
   git stash && git pull
