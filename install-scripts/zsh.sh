@@ -36,20 +36,9 @@ if [ -d "zsh-completions" ]; then
     rm -rf zsh-completions
 fi
 
-# Install Oh My Zsh, plugins, and set zsh as default shell
+# Set zsh as default shell
 if command -v zsh >/dev/null; then
-  # Check if ~/.zshrc and .zprofile exists, create a backup, and copy the new configuration
-  if [ -f "$HOME/.zshrc" ]; then
-      cp -b "$HOME/.zshrc" "$HOME/.zshrc-backup" || true
-  fi
-
-  if [ -f "$HOME/.zprofile" ]; then
-      cp -b "$HOME/.zprofile" "$HOME/.zprofile-backup" || true
-  fi
-  
-  # Copying the preconfigured zsh themes and profile
-  cp -r 'assets/.zshrc' ~/
-  cp -r 'assets/.zprofile' ~/
+  stow_dir "zsh" "$LOG"
 
   # Check if the current shell is zsh
   current_shell=$(basename "$SHELL")

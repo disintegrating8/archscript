@@ -48,7 +48,7 @@ cd suckless/
 sudo make clean install
 
 # install sl_status
-cd "$HOME/dwm-titus/slstatus" || {
+cd "$HOME/suckless/slstatus" || {
   echo "Failed to change directory to slstatus"
   exit 1
 }

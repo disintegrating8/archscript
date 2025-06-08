@@ -325,7 +325,7 @@ for option in "${options[@]}"; do
 ;;
         app_themes)
             echo "${INFO} Installing ${SKY_BLUE}GTK themes...${RESET}" | tee -a "$LOG"
-            execute_script "gtk_themes.sh"
+            execute_script "app_themes.sh"
             ;;
         wallpaper)
             echo "${INFO} Installing ${SKY_BLUE}wallpaper...${RESET}" | tee -a "$LOG"
