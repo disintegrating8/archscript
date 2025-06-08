@@ -11,7 +11,7 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-for PKG in fcitx5-im fcitx5-hangul; do
+for PKG in fcitx5-im fcitx5-hangul noto-fonts-cjk; do
     install_package "$PKG"
     done
 

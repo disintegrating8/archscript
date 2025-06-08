@@ -38,8 +38,6 @@ fi
 
 # Set zsh as default shell
 if command -v zsh >/dev/null; then
-  stow_dir "zsh" "$LOG"
-
   # Check if the current shell is zsh
   current_shell=$(basename "$SHELL")
   if [ "$current_shell" != "zsh" ]; then
@@ -56,7 +54,6 @@ if command -v zsh >/dev/null; then
   else
     echo "${NOTE} Your shell is already set to ${MAGENTA}zsh${RESET}."
   fi
-  
 fi
 
 printf "\n%.0s" {1..2}

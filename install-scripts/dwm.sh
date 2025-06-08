@@ -17,10 +17,8 @@ dwm_package=(
   bc
   imagemagick
   inxi 
-  network-manager-applet 
   xdg-user-dirs
   xdg-utils 
-  yad
   brightnessctl
 )
 
@@ -44,7 +42,7 @@ for PKG1 in "${dwm_package[@]}"; do
 done
 
 cd "$HOME" && git clone https://github.com/disintegrating8/suckless.git
-cd suckless/
+cd "$HOME/suckless/"
 sudo make clean install
 
 # install sl_status
