@@ -11,7 +11,7 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-DIRS=("Kvantum qt5ct qt6ct kitty nvim zsh fastfetch starship")
+DIRS=(Kvantum qt5ct qt6ct kitty nvim zsh fastfetch starship)
 
 # Check if stow installed
 if ! command -v stow &> /dev/null
