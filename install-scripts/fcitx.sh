@@ -1,5 +1,11 @@
 #!/bin/bash
 
+fcitx_pkg=(
+  fcitx5-im
+  fcitx5-hangul
+  noto-fonts-cjk
+)
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Change the working directory to the parent directory of the script
 PARENT_DIR="$SCRIPT_DIR/.."
@@ -11,16 +17,7 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
-for PKG in fcitx5-im fcitx5-hangul noto-fonts-cjk; do
-    install_package "$PKG"
-    done
-
-XPROFILE_FILE="$HOME/.xprofile"
-ENV_CONFIG=("GTK_IM_MODULE=fcitx" "QT_IM_MODULE=fcitx" "XMODIFIERS=@im=fcitx")
-
-echo "Ensuring fcitx starts in $XPROFILE_FILE..."
-for config in "${ENV_CONFIG[@]}"; do
-  if ! grep -q "$config" "$XPROFILE_FILE" 2>/dev/null; then
-    echo "$config" >> "$XPROFILE_FILE"
-  fi
-done
+printf "${NOTE} Installing ${SKY_BLUE}Fcitx5${RESET} Packages...\n"
+ for PKG in "${fcitx_pkg[@]}"; do
+   install_package "$PKG" "$LOG"
+  done
