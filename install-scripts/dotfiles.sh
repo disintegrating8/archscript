@@ -23,11 +23,11 @@ then
   fi
 fi
 
-for DIR in "${DIRS[@]}"; do
-  stow_dir "$DIR" "$LOG"
-done
-
-sleep 40000
+run_stow() {
+  for DIR in "${DIRS[@]}"; do
+    stow_dir "$DIR" "$LOG"
+  done
+}
 
 # Check if dotfiles exists
 printf "${NOTE} Cloning and Installing ${SKY_BLUE}Dotfiles${RESET}....\n"
@@ -35,11 +35,11 @@ printf "${NOTE} Cloning and Installing ${SKY_BLUE}Dotfiles${RESET}....\n"
 if [ -d dotfiles ]; then
   cd dotfiles
   git stash && git pull
-  stow_dir
+  run_stow
 else
   if git clone --depth=1 https://github.com/disintegrating8/dotfiles; then
     cd dotfiles || exit 1
-    stow_dir
+    run_stow
   else
     echo -e "$ERROR Failed to download ${YELLOW}dotfiles${RESET}"
   fi
