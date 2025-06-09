@@ -12,7 +12,6 @@ fonts=(
   ttf-meslo-nerd
   noto-fonts
   noto-fonts-emoji
-  noto-fonts-cjk
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

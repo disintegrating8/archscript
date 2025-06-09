@@ -1,7 +1,10 @@
 #!/bin/bash
 
 fcitx_pkg=(
-  fcitx5-im
+  fcitx5
+  fcitx5-configtool
+  fcitx5-gtk
+  fcitx5-qt
   fcitx5-hangul
   noto-fonts-cjk
 )
@@ -21,3 +24,5 @@ printf "${NOTE} Installing ${SKY_BLUE}Fcitx5${RESET} Packages...\n"
  for PKG in "${fcitx_pkg[@]}"; do
    install_package "$PKG" "$LOG"
  done
+
+printf "\n%.0s" {1..2}
