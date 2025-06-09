@@ -18,7 +18,7 @@ get_backup_dirname() {
   echo "back-up_${timestamp}"
 }
 
-DIRS="Kvantum qt5ct qt6ct zsh nvim kitty fastfetch starship"
+DIRS="Kvantum qt5ct qt6ct zsh rofi nvim kitty fastfetch starship"
 STOW_DIR="$HOME/dotfiles"
 
 run_stow() {
