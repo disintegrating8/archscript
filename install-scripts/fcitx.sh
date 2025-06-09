@@ -20,6 +20,8 @@ if ! source "$(dirname "$(readlink -f "$0")")/Global_functions.sh"; then
   exit 1
 fi
 
+LOG="Install-Logs/install-$(date +%d-%H%M%S)_fcitx.log"
+
 printf "${NOTE} Installing ${SKY_BLUE}Fcitx5${RESET} Packages...\n"
  for PKG in "${fcitx_pkg[@]}"; do
    install_package "$PKG" "$LOG"
